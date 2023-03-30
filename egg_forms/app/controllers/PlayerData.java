@@ -5,9 +5,11 @@ import play.data.validation.Constraints;
 public class PlayerData {
 
     @Constraints.Required
+    @Constraints.MinLength(value = 3)
     private String name;
 
     @Constraints.Required
+    @Constraints.MinLength(value = 3)
     private String strategy;
 
     @Constraints.Min(value = 0)
