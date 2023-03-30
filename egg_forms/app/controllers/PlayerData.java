@@ -2,13 +2,6 @@ package controllers;
 
 import play.data.validation.Constraints;
 
-/**
- * A form processing DTO that maps to the widget form.
- *
- * Using a class specifically for form binding reduces the chances
- * of a parameter tampering attack and makes code clearer, because
- * you can define constraints against the class.
- */
 public class PlayerData {
 
     @Constraints.Required
@@ -16,6 +9,14 @@ public class PlayerData {
 
     @Constraints.Required
     private String strategy;
+
+    @Constraints.Min(value = 0)
+    @Constraints.Max(value = 100)
+    private int numGames;
+
+    @Constraints.Min(value = 0)
+    @Constraints.Max(value = 10)
+    private int numWins;
 
     public PlayerData() {
     }
@@ -36,4 +37,19 @@ public class PlayerData {
         this.strategy = strategy;
     }
 
+    public int getNumGames() {
+        return numGames;
+    }
+
+    public void setNumGames(int numGames) {
+        this.numGames = numGames;
+    }
+
+    public int getNumWins() {
+        return numWins;
+    }
+
+    public void setNumWins(int numWins) {
+        this.numWins = numWins;
+    }
 }

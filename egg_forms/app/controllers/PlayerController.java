@@ -14,11 +14,6 @@ import java.util.List;
 
 import static play.libs.Scala.asScala;
 
-/**
- * An example of form processing.
- *
- * https://playframework.com/documentation/latest/JavaForms
- */
 @Singleton
 public class PlayerController extends Controller {
 
@@ -33,9 +28,9 @@ public class PlayerController extends Controller {
         this.form = formFactory.form(PlayerData.class);
         this.messagesApi = messagesApi;
         this.players = com.google.common.collect.Lists.newArrayList(
-                new Player("Mozart", "max_card"),
-                new Player("Chopin", "nearest_card"),
-                new Player("Brahms", "min_card")
+                new Player("Mozart", "max_card", 1, 1),
+                new Player("Chopin", "nearest_card", 2, 2),
+                new Player("Brahms", "min_card", 3, 3)
         );
     }
 
@@ -55,7 +50,7 @@ public class PlayerController extends Controller {
             return badRequest(views.html.listPlayers.render(asScala(players), boundForm, request, messagesApi.preferred(request)));
         } else {
             PlayerData data = boundForm.get();
-            players.add(new Player(data.getName(), data.getStrategy()));
+            players.add(new Player(data.getName(), data.getStrategy(), data.getNumGames(), data.getNumWins()));
             return redirect(routes.PlayerController.listPlayers())
                 .flashing("info", "TRACER Player added!");
         }

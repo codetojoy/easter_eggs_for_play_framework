@@ -16,7 +16,7 @@
         </thead>
         <tbody>
         @for(p <- players) {
-            <tr><td>@p.name</td><td>@p.strategy</td></tr>
+            <tr><td>@p.name (@p.numGames, @p.numWins)</td><td>@p.strategy</td></tr>
         }
         </tbody>
     </table>
@@ -36,8 +36,9 @@
         @helper.CSRF.formField
 
         @helper.inputText(form("name"))
-
         @helper.inputText(form("strategy"))
+        @helper.inputText(form("numGames"))
+        @helper.inputText(form("numWins"))
 
         <button type="submit">Create player</button>
     }
