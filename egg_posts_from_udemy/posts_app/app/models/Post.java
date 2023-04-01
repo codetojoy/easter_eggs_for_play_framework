@@ -2,10 +2,21 @@ package models;
 
 import javax.persistence.*;
 
+@Entity
+@Table(name="post")
 public class Post {
-    private String title;
-    private String content;
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name="id")
     private Integer id;
+
+    @Column(name="title")
+    private String title;
+
+    @Column(name="content")
+    private String content;
+
+    public Post() {} 
 
     public Post(String title, String content, Integer id) {
         this.title = title;
