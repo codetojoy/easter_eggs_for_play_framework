@@ -1,21 +1,5 @@
 
-WarO_Play_Framework
-=========
+* note
+- posts are populated via evolution
+- players are not, and have manual SQL via Groovy 
 
-a code exercise for experimenting with [Play Framework](https://www.playframework.com/)
-
-To Build:
----------
-
-* `sdk env`
-* `./compile.sh`
-
-To Run:
----------
-
-* `./run.sh`
-
-Rules:
----------
-
-Rules are [here](Rules.md).
