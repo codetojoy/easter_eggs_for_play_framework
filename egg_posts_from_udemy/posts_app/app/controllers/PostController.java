@@ -1,5 +1,7 @@
 package controllers;
 
+import utils.MyLog;
+
 import forms.PostForm;
 import models.Post;
 import services.PostService;
@@ -60,6 +62,7 @@ public class PostController extends Controller {
             // return redirect(routes.PostController.index(0)).flashing("info", "TRACER Post added!");
             // return badRequest(views.html.index.render(posts, boundForm, request, messagesApi.preferred(request)));
         } else {
+            MyLog.log("controller createPost cp 0");
             PostForm data = boundForm.get();
             postService.addPost(data);
             System.out.println("TRACER added new post with title: " + data.getTitle());

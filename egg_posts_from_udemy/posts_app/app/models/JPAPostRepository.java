@@ -1,5 +1,7 @@
 package models;
 
+import utils.MyLog;
+
 import play.db.jpa.JPAApi;
 
 import javax.inject.Inject;
@@ -27,6 +29,7 @@ public class JPAPostRepository implements PostRepository {
 
     @Override
     public CompletionStage<Post> add(Post post) {
+        MyLog.log("repository add cp abc");
         return supplyAsync(() -> wrap(em -> insert(em, post)), executionContext);
     }
 
@@ -45,19 +48,21 @@ public class JPAPostRepository implements PostRepository {
     }
 
     private Optional<Post> find(EntityManager em, int id) {
-        var query = em.createQuery("select p from Post p where p.id = :id", Post.class);
-        query.setParameter("id", id);
-        List<Post> posts = query.getResultList();
-
         Optional<Post> result = Optional.empty();
-        if (posts != null && (!posts.isEmpty())) {
-            result = Optional.of(posts.get(0));
+
+        Post post = em.createQuery("select p from Post p where p.id = :id", Post.class)
+                      .setParameter("id", id)
+                      .getSingleResult();
+
+        if (post != null) {
+            result = Optional.of(post);
         } 
 
         return result;
     }
 
     private Post insert(EntityManager em, Post post) {
+        MyLog.log("repository add cp def... postId: " + post.getId());
         em.persist(post);
         return post;
     }

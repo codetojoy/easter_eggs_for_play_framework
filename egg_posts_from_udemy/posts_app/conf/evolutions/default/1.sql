@@ -12,6 +12,7 @@ constraint pk_post primary key (id)
 INSERT into post (title, content) VALUES ('abc 123','the quick brown fox ...       '); 
 INSERT into post (title, content) VALUES ('def 456','jumped over ...       '); 
 INSERT into post (title, content) VALUES ('ijk 789','the lazy dog ...       '); 
+INSERT into post (title, content) VALUES ('xyz 222','another entry ...       '); 
 
 -- !Downs
 

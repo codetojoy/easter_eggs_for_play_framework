@@ -1,5 +1,7 @@
 package services;
 
+import utils.MyLog;
+
 import models.Post;
 import models.PostRepository;
 import forms.PostForm;
@@ -52,12 +54,17 @@ public class PostService {
         return post;
     }
 
+    // this is ugly and blocking 
     public void addPost(PostForm form) {
-        /*
-        var targetPost = getPosts().stream().max(Comparator.comparing(p -> p.getId())).get();
-        var newId = targetPost.getId() + 1;
-        getPosts().add(new Post(form.getTitle(), form.getContent(), newId));
-        */
+        // var targetPost = getPosts().stream().max(Comparator.comparing(p -> p.getId())).get();
+        // var newId = targetPost.getId() + 1;
+        MyLog.log("service addPost cp 0");
+        Post post = new Post(form.getTitle(), form.getContent(), null);
+        try {
+            postRepository.add(post).toCompletableFuture().get();
+        } catch(Exception ex) {
+            System.err.println("TRACER caught exception: " + ex.getMessage());
+        }
     }
 }
 
