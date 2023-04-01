@@ -34,20 +34,20 @@ public class JPAPostRepository implements PostRepository {
     }
 
     @Override
-    public CompletionStage<Stream<Post>> list() {
+    public CompletionStage<List<Post>> list() {
         return supplyAsync(() -> wrap(em -> list(em)), executionContext);
     }
 
     @Override
-    public CompletionStage<Optional<Post>> find(int id) {
-        return supplyAsync(() -> wrap(em -> find(em, id)), executionContext);
+    public CompletionStage<Optional<Post>> findById(int id) {
+        return supplyAsync(() -> wrap(em -> findById(em, id)), executionContext);
     }
 
     private <T> T wrap(Function<EntityManager, T> function) {
         return jpaApi.withTransaction(function);
     }
 
-    private Optional<Post> find(EntityManager em, int id) {
+    private Optional<Post> findById(EntityManager em, int id) {
         Optional<Post> result = Optional.empty();
 
         Post post = em.createQuery("select p from Post p where p.id = :id", Post.class)
@@ -56,7 +56,7 @@ public class JPAPostRepository implements PostRepository {
 
         if (post != null) {
             result = Optional.of(post);
-        } 
+        }
 
         return result;
     }
@@ -67,8 +67,7 @@ public class JPAPostRepository implements PostRepository {
         return post;
     }
 
-    private Stream<Post> list(EntityManager em) {
-        List<Post> posts = em.createQuery("select p from Post p", Post.class).getResultList();
-        return posts.stream();
+    private List<Post> list(EntityManager em) {
+        return em.createQuery("select p from Post p", Post.class).getResultList();
     }
 }

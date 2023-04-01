@@ -14,7 +14,7 @@ public interface PostRepository {
 
     CompletionStage<Post> add(Post post);
 
-    CompletionStage<Stream<Post>> list();
+    CompletionStage<List<Post>> list();
 
-    CompletionStage<Optional<Post>> find(int id);
+    CompletionStage<Optional<Post>> findById(int id);
 }
