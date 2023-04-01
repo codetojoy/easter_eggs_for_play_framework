@@ -1,8 +1,8 @@
 package services;
 
 import models.Post;
+import forms.PostForm;
 
-import javax.inject.Inject;
 import java.util.*;
 
 public class PostService {
@@ -23,6 +23,12 @@ public class PostService {
     public Post findPost(Integer postId) {
         var result = posts.stream().filter(p -> p.getId().equals(postId)).findAny();
         return result.orElse(null);
-    } 
+    }
+
+    public void addPost(PostForm form) {
+        var targetPost = posts.stream().max(Comparator.comparing(p -> p.getId())).get();
+        var newId = targetPost.getId() + 1;
+        posts.add(new Post(form.getTitle(), form.getContent(), newId));
+    }
 }
 
