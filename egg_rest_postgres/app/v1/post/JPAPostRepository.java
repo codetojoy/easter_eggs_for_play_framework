@@ -54,6 +54,14 @@ public class JPAPostRepository implements PostRepository {
     }
 
     private <T> T wrap(Function<EntityManager, T> function) {
+        // pathogen
+        if (Math.random() < 0.5) {
+            try { 
+                System.out.println("TRACER sleeping in JPA");
+                Thread.sleep(1800);
+            } catch (Exception ex) {
+            }
+        } 
         return jpaApi.withTransaction(function);
     }
 

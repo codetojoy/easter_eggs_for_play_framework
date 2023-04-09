@@ -47,7 +47,7 @@ public class PostAction extends play.mvc.Action.Simple {
         requestsMeter.mark();
         if (request.accepts("application/json")) {
             final Timer.Context time = responsesTimer.time();
-            return futures.timeout(doCall(request), 1L, TimeUnit.SECONDS).exceptionally(e -> {
+            return futures.timeout(doCall(request), 10L, TimeUnit.SECONDS).exceptionally(e -> {
                 return (Results.status(GATEWAY_TIMEOUT, views.html.timeout.render()));
             }).whenComplete((r, e) -> time.close());
         } else {
