@@ -1,4 +1,4 @@
-@()
+@(env: play.api.Environment)
 <!doctype html>
 
 <html lang="en">
@@ -33,6 +33,10 @@
 
 <p>
   You can always look at the API directly: <a href="/v1/posts">/v1/posts</a>
+</p>
+
+<p>
+env is: @env.mode.toString()
 </p>
 
   </body>
