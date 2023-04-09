@@ -12,6 +12,7 @@
 * cluster
 * core
     - configuration: Env, Mode
+    - play: major folder (e.g. `Result`)
 * persistence
 * project
     - version helper
