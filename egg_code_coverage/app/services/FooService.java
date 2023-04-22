@@ -29,7 +29,7 @@ public class FooService {
                 System.err.println("WARN empty arg");
             }
         } else { 
-            throw new IllegalArgumentException("null arg")
+            throw new IllegalArgumentException("null arg");
         }
 
         return builder.toString();
