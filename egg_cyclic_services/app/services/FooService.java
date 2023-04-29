@@ -1,13 +1,25 @@
 
 package services;
 
-import javax.inject.Inject;
+import javax.inject.*;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+@Singleton
 public class FooService extends BaseFooService {
+    private static int instanceCounter = 0;
+    private final Logger logger = LoggerFactory.getLogger(getClass()) ;
 
     @Inject
     public FooService(ConfigService configService) {
         super(configService);
+        instanceCounter++;
+        logger.error("TRACER FooService constructor # : " + instanceCounter);
+    }
+
+    public boolean isEnabled() {
+        return true;
     }
 
     public String externalApiCall(int id) {

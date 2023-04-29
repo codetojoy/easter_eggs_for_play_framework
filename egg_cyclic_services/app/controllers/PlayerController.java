@@ -1,6 +1,7 @@
 package controllers;
 
 import models.Player;
+import services.ConfigService;
 import services.FooService;
 
 import org.slf4j.Logger;
@@ -23,10 +24,11 @@ public class PlayerController extends Controller {
     private MessagesApi messagesApi;
     private final List<Player> players;
     private final FooService fooService;
+    private final ConfigService configService;
     private final Logger logger = LoggerFactory.getLogger(getClass()) ;
 
     @Inject
-    public PlayerController(FormFactory formFactory, MessagesApi messagesApi, FooService fooService) {
+    public PlayerController(FormFactory formFactory, MessagesApi messagesApi, FooService fooService, ConfigService configService) {
         this.form = formFactory.form(PlayerData.class);
         this.messagesApi = messagesApi;
         this.players = com.google.common.collect.Lists.newArrayList(
@@ -35,6 +37,7 @@ public class PlayerController extends Controller {
                 new Player("Brahms", "min_card", 3, 3)
         );
         this.fooService = fooService;
+        this.configService = configService;
     }
 
     public Result index() {
@@ -42,8 +45,10 @@ public class PlayerController extends Controller {
     }
 
     public Result listPlayers(Http.Request request) {
-        logger.error("TRACER calling foo service");
-        fooService.externalApiCall(5150);
+        if (configService.isFooEnabled()) {
+            logger.error("TRACER calling foo service");
+            fooService.externalApiCall(5150);
+        }
         return ok(views.html.listPlayers.render(asScala(players), form, request, messagesApi.preferred(request)));
     }
 
