@@ -24,9 +24,18 @@ javacOptions ++= Seq(
 
 pipelineStages := Seq(filter)
 
-// includeFilter in filter ++= Seq("SpecRunner.html", "*Spec.js")
+// this works individually
+// includeFilter in filter := "*Spec.js"
+// includeFilter in filter := "SpecRunner.html"
 
-// includeFilter in filter := com.slidingautonomy.sbt.filter.SbtFilter.autoImport.PathFilter((sourceDirectory in Assets).value / "javascripts" / "tests")
-// (new java.io.File("public/javascripts/tests"))
+includeFilter in filter := "*Spec.js" || "SpecRunner.html"
 
+// doesn't work
+// includeFilter in filter := "public/javascripts/tests"
+
+// includeFilter in filter := com.slidingautonomy.sbt.filter.SbtFilter.autoImport.PathFilter((sourceDirectory in Assets).value / "javascripts" / "working")
+
+// includeFilter in filter := "/Users/measter/src/github/codetojoy/easter_eggs_for_play_framework/egg_exclude/public/javascripts/tests"
+
+// includeFilter in filter := "public/javascripts/tests"
 
