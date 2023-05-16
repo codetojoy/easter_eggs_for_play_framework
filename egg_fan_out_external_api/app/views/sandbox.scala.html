@@ -1,0 +1,18 @@
+
+@(sandboxInfo: List[controllers.SandboxData])
+
+@main("Sandbox") {
+
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Result</th>
+        </thead>
+        <tbody>
+        @for(s <- sandboxInfo) {
+            <tr><td>@s.getName()</td><td>@s.getResult()</td></tr>
+        }
+        </tbody>
+    </table>
+
+    <hr/>
+}
