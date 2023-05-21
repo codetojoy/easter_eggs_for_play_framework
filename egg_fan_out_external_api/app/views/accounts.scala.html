@@ -1,0 +1,18 @@
+
+@(accounts: List[models.Account])
+
+@main("Accounts") {
+
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Id</th><th>Enrolled</th></tr>
+        </thead>
+        <tbody>
+        @for(account <- accounts) {
+            <tr><td>@account.getName()</td><td>@account.getId()</td><td>@account.getEnrolled()</td></tr>
+        }
+        </tbody>
+    </table>
+
+    <hr/>
+}

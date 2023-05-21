@@ -59,13 +59,14 @@ public class SandboxController extends Controller {
         CompletableFuture<WSResponse> request3 = ws.url(myUrl).get().toCompletableFuture();
         CompletableFuture<WSResponse> request4 = ws.url(myUrl).get().toCompletableFuture();
 
+        /*
         List<CompletableFuture<WSResponse>> futures = new ArrayList<>();
         futures.add(request1);
         futures.add(request2);
         futures.add(request3);
         futures.add(request4);
         CompletableFuture<Void> allFuture = CompletableFuture.allOf(futures);
-        
+       */
         return ws.url(myUrl).get().thenApply(response -> {
             var json = response.asJson();
             System.out.println("TRACER received json: " + json.toString());
