@@ -1,8 +1,10 @@
 
-@(accounts: List[models.Account])
+@(accounts: List[models.Account], timeMessage: String)
 
 @main("Accounts") {
 
+    <p>message: @timeMessage</p>
+    <hr/>
     <table>
         <thead>
             <tr><th>Name</th><th>Id</th><th>Enrolled</th></tr>

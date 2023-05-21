@@ -27,12 +27,14 @@ public class AccountController extends Controller {
     private WSClient ws;
 
     private final AccountService accountService;
+    private final Account_V2_Service account_V2_Service;
 
     @Inject
-    public AccountController(HttpExecutionContext ec, WSClient ws, AccountService accountService) {
+    public AccountController(HttpExecutionContext ec, WSClient ws, AccountService accountService, Account_V2_Service account_V2_Service) {
         this.ec = ec;
         this.ws = ws;
         this.accountService = accountService;
+        this.account_V2_Service = account_V2_Service;
 
         var account1 = new Account();
         account1.setName("name-1");
@@ -60,7 +62,7 @@ public class AccountController extends Controller {
 
     public Result getAccounts(Http.Request request) throws Exception {
         List<Account> accounts = new ArrayList<>();
-        int numAccounts = 50;
+        int numAccounts = 10;
         for (var i = 1; i <= numAccounts; i++) {
             int id = i * i;
             String name = "acct-" + (5150 + i);
@@ -72,14 +74,37 @@ public class AccountController extends Controller {
         CompletableFuture<Collection<Account>> future = accountService.fetchInfoForAccounts(accounts);
         Collection<Account> receivedAccountsCollection = future.get();
         List<Account> receivedAccounts = new ArrayList<>(receivedAccountsCollection);
-        utils.Logger.log(timer.getElapsed("App overall request time"));
+        String timeMessage = timer.getElapsed("V1 overall request time");
+        utils.Logger.log(timeMessage);
 
         for (Account account : receivedAccounts) {
             utils.Logger.log("App received account: " + account.toString());
         } 
 
-        return ok(views.html.accounts.render(receivedAccounts));
-/*
-*/
+        return ok(views.html.accounts.render(receivedAccounts, timeMessage));
+    }
+
+    public Result getAccounts_V2(Http.Request request) throws Exception {
+        List<Account> accounts = new ArrayList<>();
+        int numAccounts = 10;
+        for (var i = 1; i <= numAccounts; i++) {
+            int id = i * i;
+            String name = "acct-" + (5150 + i);
+            String address = i + "_Longworth_Ave";
+            accounts.add(new Account(id, name, address));
+        }
+
+        var timer = new utils.Timer();
+        CompletableFuture<Collection<Account>> future = account_V2_Service.fetchInfoForAccounts_V2(accounts);
+        Collection<Account> receivedAccountsCollection = future.get();
+        List<Account> receivedAccounts = new ArrayList<>(receivedAccountsCollection);
+        String timeMessage = timer.getElapsed("V2 overall request time");
+        utils.Logger.log(timeMessage);
+
+        for (Account account : receivedAccounts) {
+            utils.Logger.log("App received account: " + account.toString());
+        } 
+
+        return ok(views.html.accounts.render(receivedAccounts, timeMessage));
     }
 }
