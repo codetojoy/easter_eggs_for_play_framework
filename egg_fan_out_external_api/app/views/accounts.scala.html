@@ -7,11 +7,11 @@
     <hr/>
     <table>
         <thead>
-            <tr><th>Name</th><th>Id</th><th>Enrolled</th></tr>
+            <tr><th>Name</th><th>Id</th><th>Enrolled</th><th>thread-id</th><th>elapsed</th></tr>
         </thead>
         <tbody>
         @for(account <- accounts) {
-            <tr><td>@account.getName()</td><td>@account.getId()</td><td>@account.getEnrolled()</td></tr>
+            <tr><td>@account.getName()</td><td>@account.getId()</td><td>@account.getEnrolled()</td><td>@account.getThreadId()</td><td>@account.getElapsed()</td></tr>
         }
         </tbody>
     </table>

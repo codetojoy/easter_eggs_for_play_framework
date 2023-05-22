@@ -52,10 +52,14 @@ public class URLFetcher {
                                                  .build();
 
             HttpClient httpClient = HttpClient.newHttpClient();
+            Timer timer = new Timer();
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
             ObjectMapper objectMapper = new ObjectMapper();
             result = objectMapper.readValue(response.body(), Account.class);
+
+            result.setThreadId(Thread.currentThread().getId());
+            result.setElapsed(timer.getElapsed(""));
             MyLogger.log("URLFetcher OK");
         } catch (Exception ex) {
             MyLogger.log("URLFetcher ERROR caught ex: " + ex.getMessage());

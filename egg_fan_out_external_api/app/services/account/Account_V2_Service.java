@@ -50,6 +50,7 @@ public class Account_V2_Service {
         final List<CompletableFuture<Collection<Account>>> futures =
             accounts.stream().map(account -> {
                 String targetURL = buildURL(account);
+                utils.Timer timer = new utils.Timer();
 
                 return wc.url(targetURL).get().thenApply(response -> {
                     Account accountResponse = null;
@@ -63,6 +64,9 @@ public class Account_V2_Service {
                         accountResponse.setName("INTERNAL ERROR");
                         MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
                     }
+
+                    accountResponse.setThreadId(Thread.currentThread().getId());
+                    accountResponse.setElapsed(timer.getElapsed(""));
 
                     Collection<Account> accountResponses = List.of(accountResponse);
                     return accountResponses;

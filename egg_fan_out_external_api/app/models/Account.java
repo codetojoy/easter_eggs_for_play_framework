@@ -11,6 +11,8 @@ public class Account {
 
     private boolean enrolled;
     private String message = "";
+    private long threadId;
+    private String elapsed;
 
     // for Jackson
     public Account() {}
@@ -54,4 +56,10 @@ public class Account {
 
     public String getMessage() { return message; }
     public void setMessage(String message) { this.message = message; }
+
+    public long getThreadId() { return threadId; }
+    public void setThreadId(long threadId) { this.threadId = threadId; }
+
+    public String getElapsed() { return elapsed; }
+    public void setElapsed(String elapsed) { this.elapsed = elapsed; }
 }
