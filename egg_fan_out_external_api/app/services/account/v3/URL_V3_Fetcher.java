@@ -1,7 +1,9 @@
 
-package services.account;
+package services.account.v3;
 
-import java.net.http.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.net.URI;
 import java.util.Collection;
 import java.util.List;
@@ -16,23 +18,26 @@ import models.*;
 import utils.*;
 import services.AccountApiExecutionContext;
 
-class URLFetcher {
+import play.libs.ws.*;
+
+class URL_V3_Fetcher {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
     private static final AtomicInteger counter = new AtomicInteger(0);
 
-    public CompletableFuture<Collection<Account>> fetch(AccountApiExecutionContext ec, String url) {
+    public CompletableFuture<Collection<Account>> fetch(AccountApiExecutionContext ec, WSClient wc, String url) {
         return CompletableFuture.supplyAsync(() -> {
             int count = counter.incrementAndGet();
-            MyLogger.log("begin fetching URL count: " + count);
+            MyLogger.log(logger, "begin fetching URL count: " + count);
             Account result = null;
 
             try {
                 Timer timer = new Timer();
 
-                result = makeRequest(url);
+                result = makeRequest(wc, url);
 
-                MyLogger.log("INFO " + timer.getElapsed("URLFetcher fetch"));
+                MyLogger.log(logger, "INFO " + timer.getElapsed("URLFetcher fetch"));
             } catch (Exception ex) {
-                MyLogger.log("ERROR caught ex: " + ex.getMessage());
+                MyLogger.log(logger, "ERROR caught ex: " + ex.getMessage());
             } finally {
                 count = counter.decrementAndGet();
             }
@@ -42,28 +47,23 @@ class URLFetcher {
         }, ec);
     }
 
-    protected Account makeRequest(String url) {
+    protected Account makeRequest(WSClient wc, String url) {
         Account result = null;
 
         try {
-            URI targetURI = new URI(url);
-            HttpRequest httpRequest = HttpRequest.newBuilder()
-                                                 .uri(targetURI)
-                                                 .GET()
-                                                 .build();
-
-            HttpClient httpClient = HttpClient.newHttpClient();
             Timer timer = new Timer();
-            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+            String responseBody = wc.url(url).get().toCompletableFuture().get().getBody();
 
             ObjectMapper objectMapper = new ObjectMapper();
-            result = objectMapper.readValue(response.body(), Account.class);
+            result = objectMapper.readValue(responseBody, Account.class);
 
             result.setThreadId(Thread.currentThread().getId());
             result.setElapsed(timer.getElapsed(""));
-            MyLogger.log("URLFetcher OK");
+            MyLogger.log(logger, "URLFetcher OK");
         } catch (Exception ex) {
-            MyLogger.log("URLFetcher ERROR caught ex: " + ex.getMessage());
+            result = new Account();
+            result.setElapsed("INTERNAL ERROR");
+            MyLogger.log(logger, "URLFetcher ERROR caught ex: " + ex.getMessage());
         }
 
         return result;

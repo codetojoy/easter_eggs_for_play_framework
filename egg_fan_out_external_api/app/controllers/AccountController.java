@@ -16,8 +16,9 @@ import play.libs.concurrent.*;
 
 import models.*;
 import utils.MyLogger;
-import services.account.*;
-import services.account.v2.*;
+import services.account.AccountService;
+import services.account.v2.Account_V2_Service;
+import services.account.v3.Account_V3_Service;
 
 @Singleton
 public class AccountController extends Controller {
@@ -28,15 +29,17 @@ public class AccountController extends Controller {
 
     private final AccountService accountService;
     private final Account_V2_Service account_V2_Service;
+    private final Account_V3_Service account_V3_Service;
 
     private final static int NUM_ACCOUNTS = 100;
 
     @Inject
-    public AccountController(HttpExecutionContext ec, WSClient ws, AccountService accountService, Account_V2_Service account_V2_Service) {
+    public AccountController(HttpExecutionContext ec, WSClient ws, AccountService accountService, Account_V2_Service account_V2_Service, Account_V3_Service account_V3_Service) {
         this.ec = ec;
         this.ws = ws;
         this.accountService = accountService;
         this.account_V2_Service = account_V2_Service;
+        this.account_V3_Service = account_V3_Service;
     }
 
     public Result index() {
@@ -76,6 +79,23 @@ public class AccountController extends Controller {
 
         var timer = new utils.Timer();
         CompletableFuture<Collection<Account>> future = account_V2_Service.fetchInfoForAccounts_V2(accounts);
+        Collection<Account> receivedAccountsCollection = future.get();
+        List<Account> receivedAccounts = new ArrayList<>(receivedAccountsCollection);
+        String timeMessage = timer.getElapsed("V2 overall request time");
+        MyLogger.log(logger, timeMessage);
+
+        for (Account account : receivedAccounts) {
+            MyLogger.log(logger, "App received account: " + account.toString());
+        } 
+
+        return ok(views.html.accounts.render(receivedAccounts, timeMessage));
+    }
+
+    public Result getAccounts_V3(Http.Request request) throws Exception {
+        var accounts = genAccounts();
+
+        var timer = new utils.Timer();
+        CompletableFuture<Collection<Account>> future = account_V3_Service.fetchInfoForAccounts_V3(accounts);
         Collection<Account> receivedAccountsCollection = future.get();
         List<Account> receivedAccounts = new ArrayList<>(receivedAccountsCollection);
         String timeMessage = timer.getElapsed("V2 overall request time");
