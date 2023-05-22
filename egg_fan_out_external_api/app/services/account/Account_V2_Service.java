@@ -1,6 +1,8 @@
 
 package services.account;
 
+import org.slf4j.*;
+
 import java.util.*;
 import java.util.concurrent.*;
 import static java.util.Collections.emptyList;
@@ -21,6 +23,8 @@ import models.Account;
 import utils.*;
 
 public class Account_V2_Service {
+    private final Logger logger = LoggerFactory.getLogger(getClass());
+
     private ExecutorService executor = Executors.newFixedThreadPool(10);
     private final WSClient wc;
 
@@ -47,19 +51,19 @@ public class Account_V2_Service {
             accounts.stream().map(account -> {
                 String targetURL = buildURL(account);
 
-                CompletionStage<WSResponse> responseStage = wc.url(targetURL).get();
-                return responseStage.thenApply(response -> {
-                    String responseBody = response.getBody();
-                    ObjectMapper objectMapper = new ObjectMapper();
+                return wc.url(targetURL).get().thenApply(response -> {
                     Account accountResponse = null;
 
                     try {
+                        String responseBody = response.getBody();
+                        ObjectMapper objectMapper = new ObjectMapper();
                         accountResponse = objectMapper.readValue(responseBody, Account.class);
+                        MyLogger.log(logger, "wc received response. acc: " + accountResponse.toString());
                     } catch (Exception ex) {
                         accountResponse.setName("INTERNAL ERROR");
+                        MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
                     }
 
-                    // CompletableFuture<Collection<Account>> future = CompletableFuture.completedFuture(List.of(accountResponse));
                     Collection<Account> accountResponses = List.of(accountResponse);
                     return accountResponses;
                 }).toCompletableFuture();

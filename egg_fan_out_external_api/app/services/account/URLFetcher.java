@@ -21,7 +21,7 @@ public class URLFetcher {
     public CompletableFuture<Collection<Account>> fetch(Executor executor, String url) {
         return CompletableFuture.supplyAsync(() -> {
             int count = counter.incrementAndGet();
-            Logger.log("begin fetching URL count: " + count);
+            MyLogger.log("begin fetching URL count: " + count);
             Account result = null;
 
             try {
@@ -29,13 +29,13 @@ public class URLFetcher {
 
                 result = makeRequest(url);
 
-                Logger.log("INFO " + timer.getElapsed("URLFetcher fetch"));
+                MyLogger.log("INFO " + timer.getElapsed("URLFetcher fetch"));
             } catch (Exception ex) {
-                Logger.log("ERROR caught ex: " + ex.getMessage());
+                MyLogger.log("ERROR caught ex: " + ex.getMessage());
             } finally {
                 count = counter.decrementAndGet();
             }
-            Logger.log("end fetching URL count: " + count);
+            MyLogger.log("end fetching URL count: " + count);
 
             return List.of(result);
         }, executor);
@@ -56,9 +56,9 @@ public class URLFetcher {
 
             ObjectMapper objectMapper = new ObjectMapper();
             result = objectMapper.readValue(response.body(), Account.class);
-            Logger.log("URLFetcher OK");
+            MyLogger.log("URLFetcher OK");
         } catch (Exception ex) {
-            Logger.log("URLFetcher ERROR caught ex: " + ex.getMessage());
+            MyLogger.log("URLFetcher ERROR caught ex: " + ex.getMessage());
         }
 
         return result;

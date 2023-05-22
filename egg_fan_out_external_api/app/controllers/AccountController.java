@@ -15,13 +15,14 @@ import play.libs.ws.*;
 import play.libs.concurrent.*;
 
 import models.*;
+import utils.MyLogger;
 import services.account.*;
 
 @Singleton
 public class AccountController extends Controller {
 
     private final Logger logger = LoggerFactory.getLogger(getClass()) ;
-    private List<Account> accounts = new ArrayList<>();
+    // private List<Account> accounts = new ArrayList<>();
 
     private HttpExecutionContext ec;
     private WSClient ws;
@@ -36,6 +37,7 @@ public class AccountController extends Controller {
         this.accountService = accountService;
         this.account_V2_Service = account_V2_Service;
 
+/*
         var account1 = new Account();
         account1.setName("name-1");
         account1.setId(5150);
@@ -54,6 +56,7 @@ public class AccountController extends Controller {
         accounts.add(account1);
         accounts.add(account2);
         accounts.add(account3);
+*/
     }
 
     public Result index() {
@@ -80,10 +83,10 @@ public class AccountController extends Controller {
         Collection<Account> receivedAccountsCollection = future.get();
         List<Account> receivedAccounts = new ArrayList<>(receivedAccountsCollection);
         String timeMessage = timer.getElapsed("V1 overall request time");
-        utils.Logger.log(timeMessage);
+        MyLogger.log(logger, timeMessage);
 
         for (Account account : receivedAccounts) {
-            utils.Logger.log("App received account: " + account.toString());
+            MyLogger.log(logger, "App received account: " + account.toString());
         } 
 
         return ok(views.html.accounts.render(receivedAccounts, timeMessage));
@@ -97,10 +100,10 @@ public class AccountController extends Controller {
         Collection<Account> receivedAccountsCollection = future.get();
         List<Account> receivedAccounts = new ArrayList<>(receivedAccountsCollection);
         String timeMessage = timer.getElapsed("V2 overall request time");
-        utils.Logger.log(timeMessage);
+        MyLogger.log(logger, timeMessage);
 
         for (Account account : receivedAccounts) {
-            utils.Logger.log("App received account: " + account.toString());
+            MyLogger.log(logger, "App received account: " + account.toString());
         } 
 
         return ok(views.html.accounts.render(receivedAccounts, timeMessage));
