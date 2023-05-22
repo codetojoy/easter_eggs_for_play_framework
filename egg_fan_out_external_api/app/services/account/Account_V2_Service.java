@@ -21,20 +21,23 @@ import play.libs.ws.*;
 
 import models.Account;
 import utils.*;
+import services.AccountApiExecutionContext;
 
 public class Account_V2_Service {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private ExecutorService executor = Executors.newFixedThreadPool(10);
+    // private ExecutorService executor = Executors.newFixedThreadPool(10);
     private final WSClient wc;
+    private final AccountApiExecutionContext ec;
 
     @Inject
-    public Account_V2_Service(WSClient wc) {
+    public Account_V2_Service(WSClient wc, AccountApiExecutionContext ec) {
         this.wc = wc;
+        this.ec = ec;
     }
 
     public void shutdown() {
-        executor.shutdown();
+        // executor.shutdown();
     }
 
     protected String buildURL(Account account) {
@@ -52,7 +55,7 @@ public class Account_V2_Service {
                 String targetURL = buildURL(account);
                 utils.Timer timer = new utils.Timer();
 
-                return wc.url(targetURL).get().thenApply(response -> {
+                return wc.url(targetURL).get().thenApplyAsync(response -> {
                     Account accountResponse = null;
 
                     try {
@@ -70,7 +73,7 @@ public class Account_V2_Service {
 
                     Collection<Account> accountResponses = List.of(accountResponse);
                     return accountResponses;
-                }).toCompletableFuture();
+                }, ec).toCompletableFuture();
             }).collect(toList());
 
         return futures.stream()

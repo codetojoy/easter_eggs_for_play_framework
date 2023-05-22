@@ -14,11 +14,12 @@ import com.fasterxml.jackson.core.type.TypeReference;
 
 import models.*;
 import utils.*;
+import services.AccountApiExecutionContext;
 
 public class URLFetcher {
     private static final AtomicInteger counter = new AtomicInteger(0);
 
-    public CompletableFuture<Collection<Account>> fetch(Executor executor, String url) {
+    public CompletableFuture<Collection<Account>> fetch(AccountApiExecutionContext ec, String url) {
         return CompletableFuture.supplyAsync(() -> {
             int count = counter.incrementAndGet();
             MyLogger.log("begin fetching URL count: " + count);
@@ -38,7 +39,7 @@ public class URLFetcher {
             MyLogger.log("end fetching URL count: " + count);
 
             return List.of(result);
-        }, executor);
+        }, ec);
     }
 
     protected Account makeRequest(String url) {

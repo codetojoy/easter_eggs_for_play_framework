@@ -19,19 +19,22 @@ import play.libs.ws.*;
 
 import models.Account;
 import utils.*;
+import services.AccountApiExecutionContext;
 
 public class AccountService {
     private static final String TARGET_URL_FORMAT = Constants.ACCOUNT_URL_FORMAT;
-    private ExecutorService executor = Executors.newFixedThreadPool(10);
+    // private ExecutorService executor = Executors.newFixedThreadPool(10);
     private final WSClient wc;
+    private final AccountApiExecutionContext ec;
 
     @Inject
-    public AccountService(WSClient wc) {
+    public AccountService(WSClient wc, AccountApiExecutionContext ec) {
         this.wc = wc;
+        this.ec = ec;
     }
 
     public void shutdown() {
-        executor.shutdown();
+        // executor.shutdown();
     }
 
     public CompletableFuture<Collection<Account>> fetchInfoForAccounts(List<Account> accounts) {
@@ -44,7 +47,7 @@ public class AccountService {
                 int delayInSeconds = new MyRandom().getRandomInclusive(1,3);
                 // int delayInSeconds = new DelayStrategy().getSimpleMod(id, 10);
                 String targetURL = String.format(TARGET_URL_FORMAT, id, name, address, delayInSeconds);
-                return fetcher.fetch(executor, targetURL);
+                return fetcher.fetch(ec, targetURL);
             }).collect(toList());
 
         return futures.stream()
