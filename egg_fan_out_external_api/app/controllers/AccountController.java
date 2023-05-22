@@ -60,7 +60,7 @@ public class AccountController extends Controller {
         return ok(views.html.index.render());
     }
 
-    public Result getAccounts(Http.Request request) throws Exception {
+    protected List<Account> genAccounts() {
         List<Account> accounts = new ArrayList<>();
         int numAccounts = 10;
         for (var i = 1; i <= numAccounts; i++) {
@@ -69,6 +69,11 @@ public class AccountController extends Controller {
             String address = i + "_Longworth_Ave";
             accounts.add(new Account(id, name, address));
         }
+        return accounts;
+    }
+
+    public Result getAccounts(Http.Request request) throws Exception {
+        var accounts = genAccounts();
 
         var timer = new utils.Timer();
         CompletableFuture<Collection<Account>> future = accountService.fetchInfoForAccounts(accounts);
@@ -85,14 +90,7 @@ public class AccountController extends Controller {
     }
 
     public Result getAccounts_V2(Http.Request request) throws Exception {
-        List<Account> accounts = new ArrayList<>();
-        int numAccounts = 10;
-        for (var i = 1; i <= numAccounts; i++) {
-            int id = i * i;
-            String name = "acct-" + (5150 + i);
-            String address = i + "_Longworth_Ave";
-            accounts.add(new Account(id, name, address));
-        }
+        var accounts = genAccounts();
 
         var timer = new utils.Timer();
         CompletableFuture<Collection<Account>> future = account_V2_Service.fetchInfoForAccounts_V2(accounts);

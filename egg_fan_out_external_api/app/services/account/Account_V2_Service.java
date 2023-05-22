@@ -21,7 +21,6 @@ import models.Account;
 import utils.*;
 
 public class Account_V2_Service {
-    private static final String TARGET_URL_FORMAT = Constants.ACCOUNT_URL_FORMAT;
     private ExecutorService executor = Executors.newFixedThreadPool(10);
     private final WSClient wc;
 
@@ -34,26 +33,36 @@ public class Account_V2_Service {
         executor.shutdown();
     }
 
+    protected String buildURL(Account account) {
+        int id = account.getId();
+        String name = account.getName();
+        String address = account.getAddress();
+        int delayInSeconds = new MyRandom().getRandomInclusive(1,3);
+        String targetURL = String.format(Constants.ACCOUNT_URL_FORMAT, id, name, address, delayInSeconds);
+        return targetURL;
+    }
+
     public CompletableFuture<Collection<Account>> fetchInfoForAccounts_V2(List<Account> accounts) throws Exception {
         final List<CompletableFuture<Collection<Account>>> futures =
             accounts.stream().map(account -> {
-                int id = account.getId();
-                String name = account.getName();
-                String address = account.getAddress();
-                int delayInSeconds = new MyRandom().getRandomInclusive(1,3);
-                String targetURL = String.format(TARGET_URL_FORMAT, id, name, address, delayInSeconds);
-                Account accountResponse = new Account();
-                try {
-                    WSResponse response = wc.url(targetURL).get().toCompletableFuture().get();
+                String targetURL = buildURL(account);
+
+                CompletionStage<WSResponse> responseStage = wc.url(targetURL).get();
+                return responseStage.thenApply(response -> {
                     String responseBody = response.getBody();
                     ObjectMapper objectMapper = new ObjectMapper();
-                    accountResponse = objectMapper.readValue(responseBody, Account.class);
-                } catch (Exception ex) {
-                    accountResponse.setName("INTERNAL ERROR");
-                }
+                    Account accountResponse = null;
 
-                CompletableFuture<Collection<Account>> future = CompletableFuture.completedFuture(List.of(accountResponse));
-                return future;
+                    try {
+                        accountResponse = objectMapper.readValue(responseBody, Account.class);
+                    } catch (Exception ex) {
+                        accountResponse.setName("INTERNAL ERROR");
+                    }
+
+                    // CompletableFuture<Collection<Account>> future = CompletableFuture.completedFuture(List.of(accountResponse));
+                    Collection<Account> accountResponses = List.of(accountResponse);
+                    return accountResponses;
+                }).toCompletableFuture();
             }).collect(toList());
 
         return futures.stream()
