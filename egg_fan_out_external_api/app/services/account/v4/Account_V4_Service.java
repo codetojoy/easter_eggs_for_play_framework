@@ -1,5 +1,5 @@
 
-package services.account.v2;
+package services.account.v4;
 
 import org.slf4j.*;
 
@@ -22,14 +22,14 @@ import models.Account;
 import utils.*;
 import services.AccountApiExecutionContext;
 
-public class Account_V2_Service {
+public class Account_V4_Service {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final WSClient wc;
     private final AccountApiExecutionContext ec;
 
     @Inject
-    public Account_V2_Service(WSClient wc, AccountApiExecutionContext ec) {
+    public Account_V4_Service(WSClient wc, AccountApiExecutionContext ec) {
         this.wc = wc;
         this.ec = ec;
     }
@@ -38,46 +38,53 @@ public class Account_V2_Service {
         int id = account.getId();
         String name = account.getName();
         String address = account.getAddress();
-        int delayInSeconds = new MyRandom().getRandomInclusive(1,3);
+        int delayInSeconds = new MyRandom().getRandomInclusive(1,5);
         String targetURL = String.format(Constants.ACCOUNT_URL_FORMAT, id, name, address, delayInSeconds);
         return targetURL;
     }
 
-    public CompletableFuture<Collection<Account>> fetchInfoForAccounts_V2(List<Account> accounts) throws Exception {
-        final List<CompletableFuture<Collection<Account>>> futures =
+    public List<Account> fetchInfoForAccounts_V4(List<Account> accounts) throws Exception {
+        final List<CompletableFuture<Collection<Optional<Account>>>> futures =
             accounts.stream().map(account -> {
                 String targetURL = buildURL(account);
                 utils.Timer timer = new utils.Timer();
 
                 return wc.url(targetURL).get().thenApplyAsync(response -> {
-                    Account accountResponse = null;
+                    Optional<Account> accountResponse = Optional.empty();
 
                     try {
                         String responseBody = response.getBody();
                         ObjectMapper objectMapper = new ObjectMapper();
-                        accountResponse = objectMapper.readValue(responseBody, Account.class);
-                        MyLogger.log(logger, "wc received response. acc: " + accountResponse.toString());
+                        Account receivedAccount = objectMapper.readValue(responseBody, Account.class);
+
+                        MyLogger.log(logger, "wc received response. acc: " + receivedAccount.toString());
+
+                        receivedAccount.setThreadId(Thread.currentThread().getId());
+                        receivedAccount.setElapsed(timer.getElapsed(""));
+
+                        accountResponse = Optional.of(receivedAccount);
                     } catch (Exception ex) {
-                        accountResponse.setName("INTERNAL ERROR");
                         MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
                     }
 
-                    accountResponse.setThreadId(Thread.currentThread().getId());
-                    accountResponse.setElapsed(timer.getElapsed(""));
+                    Collection<Optional<Account>> accountResponses = List.of(accountResponse);
 
-                    Collection<Account> accountResponses = List.of(accountResponse);
                     return accountResponses;
                 }, ec).toCompletableFuture();
             }).collect(toList());
 
-        return futures.stream()
-                .reduce(combineApiCalls())
-                .orElse(CompletableFuture.completedFuture(emptyList()));
+        CompletableFuture<Collection<Optional<Account>>> aggregateFuture = futures.stream()
+                                                                            .reduce(combineApiCalls())
+                                                                            .orElse(CompletableFuture.completedFuture(emptyList()));
+
+        Collection<Optional<Account>> receivedAccountsCollection = aggregateFuture.get();
+        List<Account> receivedAccounts = receivedAccountsCollection.stream().filter(optionalAcc -> optionalAcc.isPresent()).map(optionalAcc -> optionalAcc.get()).collect(toList());
+        return receivedAccounts;
     }
 
     // https://theboreddev.com/parallel-api-calls-with-completablefuture/
 
-    protected BinaryOperator<CompletableFuture<Collection<Account>>> combineApiCalls() {
+    protected BinaryOperator<CompletableFuture<Collection<Optional<Account>>>> combineApiCalls() {
         return (cf1, cf2) -> cf1
                 .thenCombine(cf2, (accounts1, accounts2) -> {
                     return Stream.concat(accounts1.stream(), accounts2.stream()).collect(toList());
