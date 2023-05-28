@@ -16,6 +16,7 @@ import play.libs.concurrent.*;
 
 import models.*;
 import utils.MyLogger;
+import services.account.v1.Account_V1_Service;
 import services.account.v3.Account_V3_Service;
 
 @Singleton
@@ -25,15 +26,18 @@ public class AccountController extends Controller {
     private final HttpExecutionContext ec;
     private final WSClient ws;
 
+    private final Account_V1_Service account_V1_Service;
     private final Account_V3_Service account_V3_Service;
 
     private final static int NUM_ACCOUNTS = 1;
 
     @Inject
     public AccountController(HttpExecutionContext ec, WSClient ws, 
+                             Account_V1_Service account_V1_Service,
                              Account_V3_Service account_V3_Service) {
         this.ec = ec;
         this.ws = ws;
+        this.account_V1_Service = account_V1_Service;
         this.account_V3_Service = account_V3_Service;
     }
 
@@ -41,20 +45,23 @@ public class AccountController extends Controller {
         return ok(views.html.index.render());
     }
 
-    protected List<Account> genAccounts() {
-        List<Account> accounts = new ArrayList<>();
-        for (var i = 1; i <= NUM_ACCOUNTS; i++) {
-            int id = i;
-            String name = "acct-" + (5150 + i);
-            String address = i + "_Longworth_Ave";
-            accounts.add(new Account(id, name, address));
-        }
-        return accounts;
+    // v1
+    public Result doLongRunningTask_v1(Http.Request request) throws Exception {
+        var accounts = Accounts.genAccounts(NUM_ACCOUNTS);
+
+        var timer = new utils.Timer();
+
+        List<Account> receivedAccounts = account_V1_Service.fetchInfoForAccounts_V1(accounts);
+
+        String timeMessage = timer.getElapsed("V2 overall request time");
+        MyLogger.log(logger, timeMessage);
+
+        return ok(views.html.accounts.render(receivedAccounts, timeMessage));
     }
 
-    // v1
-    public Result doLongRunningTask(Http.Request request) throws Exception {
-        var accounts = genAccounts();
+    // v3
+    public Result doLongRunningTask_v3(Http.Request request) throws Exception {
+        var accounts = Accounts.genAccounts(NUM_ACCOUNTS);
 
         var timer = new utils.Timer();
         CompletableFuture<Collection<Account>> future = account_V3_Service.fetchInfoForAccounts_V3(accounts);
