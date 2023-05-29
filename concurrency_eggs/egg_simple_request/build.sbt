@@ -1,4 +1,4 @@
-name := """play-java-forms-example"""
+name := """egg concurrency simple"""
 
 version := "1.0-SNAPSHOT"
 

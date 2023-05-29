@@ -8,6 +8,7 @@ import javax.inject.Inject;
 import javax.inject.Singleton;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static play.libs.Scala.asScala;
 
@@ -43,6 +44,19 @@ public class AccountController extends Controller {
 
     public Result index() {
         return ok(views.html.index.render());
+    }
+
+    private static final AtomicInteger counter = new AtomicInteger(0);
+
+    public Result jobStatus(Http.Request request) {
+        String status = "working ... c: " + counter + " " + new Date().toString();
+        int value = counter.incrementAndGet();
+
+        if (value >= 7) {
+            return ok(views.html.jobdone.render(status));
+        } else {
+            return ok(views.html.job.render(status));
+        }
     }
 
     // v1
