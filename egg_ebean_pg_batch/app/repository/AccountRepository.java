@@ -49,6 +49,15 @@ public class AccountRepository {
         return result;
     }
 
+    public CompletionStage<String> doBatch2(List<Integer> accountIds) {
+        return supplyAsync(() -> {
+            String t2 = "" + Thread.currentThread().getId();
+            var result = doBatch(accountIds); 
+            String s = " t2: " + t2 + " result: " + result; 
+            return s;
+        }, executionContext); 
+    }
+
     public CompletionStage<AccountMap> getAccounts() {
         return supplyAsync(() -> DB.find(Account.class).orderBy("account_id").findList(), executionContext)
                 .thenApply(list -> {

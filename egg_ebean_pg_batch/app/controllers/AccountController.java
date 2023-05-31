@@ -54,6 +54,17 @@ public class AccountController extends Controller {
         return results;
     }
 
+    public CompletionStage<Result> batch2(Http.Request request) {
+        String t1 = " t1: " + Thread.currentThread().getId();
+        utils.Timer timer = new Timer();
+        List<Integer> accountIds = generateAccountIds();
+        return accountRepository.doBatch2(accountIds).thenApplyAsync(result -> {
+            String t3 = " t3: " + Thread.currentThread().getId();
+            String status = timer.getElapsed("batch complete: " + t1 + result + t3);
+            return ok(views.html.batch.render(status));
+        }, httpExecutionContext.current());
+    }
+
     public Result batch(Http.Request request) {
         utils.Timer timer = new utils.Timer();
         var result = accountRepository.doBatch(generateAccountIds());

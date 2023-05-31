@@ -15,6 +15,7 @@ POST    /computers                  controllers.HomeController.save(request: Req
 GET     /accounts/quicklist         controllers.AccountController.quicklist(request: Request)
 GET     /accounts/slowlist          controllers.AccountController.slowlist(request: Request)
 GET     /accounts/batch             controllers.AccountController.batch(request: Request)
+GET     /accounts/batch2             controllers.AccountController.batch2(request: Request)
 
 # Edit existing computer
 GET     /computers/:id              controllers.HomeController.edit(request: Request, id:Long)
