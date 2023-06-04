@@ -1,0 +1,21 @@
+
+@(references: List[models.Reference]) 
+
+@main {
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+<p>num references: @references.size()</p>
+@*
+      @for(reference <- references) {
+        <tr>
+          <td>@reference.getId()</td>
+          <td>@reference.getName()</td>
+          <td>@reference.getEmail()</td>
+        </tr>
+      }
+*@
+      </tbody>
+    </table>
+}
+

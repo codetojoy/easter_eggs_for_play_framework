@@ -1,0 +1,26 @@
+
+@(customerReferences: List[models.CustomerReference]) 
+
+@main {
+<p>num customerReferences: @customerReferences.size()</p>
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+        <th>
+            <td>customer name</td>
+            <td>reference name</td>
+        </th>
+
+      @for(customerReference <- customerReferences) {
+        <tr>
+            <td></td>
+            <td></td>
+@*
+          <td>@customerReference.getCustomer().getName()</td>
+          <td>@customerReference.getReference().getName()</td>
+*@
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+

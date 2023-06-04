@@ -1,0 +1,18 @@
+
+@(plans: List[models.Plan]) 
+
+@main {
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(plan <- plans) {
+        <tr>
+          <td>@plan.getId()</td>
+          <td>@plan.getName()</td>
+          <td>@plan.getStatus()</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+
