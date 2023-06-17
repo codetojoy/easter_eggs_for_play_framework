@@ -28,12 +28,16 @@ public class PlanController extends Controller {
         this.messagesApi = messagesApi;
     }
 
-    public CompletionStage<Result> quicklist(Http.Request request) {
-        boolean isFoo = true;
-        String message = "results for isFoo: " + isFoo;
+    public CompletionStage<Result> quicklist(Http.Request request) throws Exception {
+        boolean targetIsFoo = false;
+
+        // anti-pattern but ok for now:
+        int count =  planRepository.getPlanCount(targetIsFoo).toCompletableFuture().get();
+
+        String message = "results for isFoo: " + targetIsFoo + " # : " + count;
 
         // Run a db operation in another thread (using DatabaseExecutionContext)
-        return planRepository.getPlans(isFoo).thenApplyAsync(plans -> {
+        return planRepository.getPlans(targetIsFoo).thenApplyAsync(plans -> {
             return ok(views.html.plans.render(plans, message));
         }, httpExecutionContext.current());
     }

@@ -19,6 +19,19 @@ public class PlanRepository {
         this.executionContext = executionContext;
     }
 
+    public CompletionStage<Integer> getPlanCount(boolean isFoo) {
+        return supplyAsync(() -> {
+            // e.g. '[{"isFoo":true}]'
+            String rawFormat = "'[{\"%s\": %s}]'";
+            String rawValue = String.format(rawFormat, "isFoo", isFoo);
+
+            return DB.find(Plan.class)
+                     .where()
+                     .raw("payload @> " + rawValue)
+                     .findCount();
+        }, executionContext);
+    }
+
     public CompletionStage<List<Plan>> getPlans(boolean isFoo) {
         return supplyAsync(() -> {
             // e.g. '[{"isFoo":true}]'
