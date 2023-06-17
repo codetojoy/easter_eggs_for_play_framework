@@ -21,13 +21,12 @@ public class PlanRepository {
 
     public CompletionStage<List<Plan>> getPlans(boolean isFoo) {
         return supplyAsync(() -> {
-            System.out.println("TRACER PR getPlans()");
             // e.g. '[{"isFoo":true}]'
             String rawFormat = "'[{\"%s\": %s}]'";
             String rawValue = String.format(rawFormat, "isFoo", isFoo);
+
             return DB.find(Plan.class)
                      .where()
-                     // .raw("payload @> '[{\"isFoo\":true}]'")
                      .raw("payload @> " + rawValue)
                      .orderBy("id")
                      .findList();
