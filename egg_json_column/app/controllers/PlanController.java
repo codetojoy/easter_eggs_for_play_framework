@@ -29,7 +29,7 @@ public class PlanController extends Controller {
     }
 
     public CompletionStage<Result> quicklist(Http.Request request) {
-        boolean isFoo = false;
+        boolean isFoo = true;
         String message = "results for isFoo: " + isFoo;
 
         // Run a db operation in another thread (using DatabaseExecutionContext)
