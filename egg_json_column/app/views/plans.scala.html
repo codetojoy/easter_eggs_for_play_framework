@@ -1,0 +1,20 @@
+
+@(plans: List[models.Plan], message: String) 
+
+@main {
+    <h2>@message</h2>
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(plan <- plans) {
+        <tr>
+          <td>@plan.getId()</td>
+          <td>@plan.getName()</td>
+          <td>@plan.getStatus()</td>
+          <td>@plan.getPayload()</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+
