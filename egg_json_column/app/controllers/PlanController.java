@@ -11,7 +11,7 @@ import repository.PlanRepository;
 import javax.inject.Inject;
 import javax.persistence.PersistenceException;
 import java.util.*;
-import java.util.concurrent.CompletionStage;
+import java.util.concurrent.*;
 
 public class PlanController extends Controller {
 
@@ -31,14 +31,12 @@ public class PlanController extends Controller {
     public CompletionStage<Result> quicklist(Http.Request request) throws Exception {
         boolean targetIsFoo = false;
 
-        // anti-pattern but ok for now:
-        int count =  planRepository.getPlanCount(targetIsFoo).toCompletableFuture().get();
+        CompletionStage<Integer> countFuture = planRepository.getPlanCount(targetIsFoo);
+        CompletionStage<List<Plan>> plansFuture = planRepository.getPlans(targetIsFoo);
 
-        String message = "results for isFoo: " + targetIsFoo + " # : " + count;
-
-        // Run a db operation in another thread (using DatabaseExecutionContext)
-        return planRepository.getPlans(targetIsFoo).thenApplyAsync(plans -> {
+        return countFuture.thenCombine(plansFuture, (count, plans) -> {
+            String message = "results for isFoo: " + targetIsFoo + " # : " + count;
             return ok(views.html.plans.render(plans, message));
-        }, httpExecutionContext.current());
+        });
     }
 }
