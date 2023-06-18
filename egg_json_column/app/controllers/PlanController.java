@@ -1,5 +1,6 @@
 package controllers;
 
+import utilities.Timer;
 import models.*;
 import play.data.Form;
 import play.data.FormFactory;
@@ -29,13 +30,15 @@ public class PlanController extends Controller {
     }
 
     public CompletionStage<Result> quicklist(Http.Request request) throws Exception {
-        boolean targetIsFoo = false;
+        boolean targetIsFoo = true;
 
+        Timer timer = new Timer();
         CompletionStage<Integer> countFuture = planRepository.getPlanCount(targetIsFoo);
         CompletionStage<List<Plan>> plansFuture = planRepository.getPlans(targetIsFoo);
 
         return countFuture.thenCombine(plansFuture, (count, plans) -> {
-            String message = "results for isFoo: " + targetIsFoo + " # : " + count;
+            String tmpMessage = "isFoo: " + targetIsFoo + " rs #: " + plans.size() + " total #: " + count;
+            String message = timer.getElapsed(tmpMessage); 
             return ok(views.html.plans.render(plans, message));
         });
     }
