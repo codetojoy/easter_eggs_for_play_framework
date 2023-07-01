@@ -1,0 +1,20 @@
+# Routes
+# This file defines all application routes (Higher priority routes first)
+# ~~~~
+
+# Default path will just redirect to the computer list
+GET     /                           controllers.HomeController.index()
+
+GET     /accounts/quicklist         controllers.AccountController.quicklist(request: Request)
+
+GET     /config/showSnippet         controllers.ConfigController.showSnippet(request: Request)
+
+GET     /plans/quicklist            controllers.PlanController.quicklist(request: Request)
+GET     /references/refs            controllers.ReferenceController.getReferences(request: Request)
+GET     /references/rps            controllers.ReferenceController.getReferencePlans(request: Request)
+GET     /references/crs            controllers.ReferenceController.getCustomerReferences(request: Request)
+GET     /customers/quicklist            controllers.CustomerController.quicklist(request: Request)
+
+# Map static resources from the /public folder to the /assets URL path
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
