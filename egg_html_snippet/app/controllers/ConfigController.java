@@ -39,7 +39,8 @@ public class ConfigController extends Controller {
         return configRepository.getConfig(docId).thenApplyAsync(config -> {
             String snippet = config.getSnippet();
             String template = config.getTemplate();
-            Optional<String> result = configService.buildSnippet(snippet, template);
+            String hash = config.getHash();
+            Optional<String> result = configService.buildSnippet(snippet, template, hash);
 
             String message = "error";
 

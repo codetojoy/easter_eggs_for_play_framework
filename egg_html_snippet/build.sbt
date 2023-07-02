@@ -8,6 +8,7 @@ lazy val root = (project in file("."))
       guice,
       jdbc,
       "org.postgresql" % "postgresql" % "42.5.2",
+      "com.google.guava" % "guava" % "32.1.1-jre",
       "org.awaitility" % "awaitility" % "3.1.6" % Test,
       "org.assertj" % "assertj-core" % "3.12.2" % Test,
       "org.mockito" % "mockito-core" % "3.0.0" % Test,

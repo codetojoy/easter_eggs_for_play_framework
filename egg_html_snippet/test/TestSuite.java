@@ -1,11 +1,11 @@
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import services.ConfigServiceTest;
+
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        ModelTest.class,
-        FunctionalTest.class,
-        BrowserTest.class
+        ConfigServiceTest.class
 })
 public class TestSuite {
     // the class remains empty,

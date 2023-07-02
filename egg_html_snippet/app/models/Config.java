@@ -26,6 +26,9 @@ public class Config {
     @Constraints.Required
     private String template;
 
+    @Constraints.Required
+    private String hash;
+
     public String getId() {
         return id;
     }
@@ -48,6 +51,14 @@ public class Config {
 
     public void setTemplate(String template) {
         this.template = template;
+    }
+
+    public String getHash() {
+        return hash;
+    }
+
+    public void setHash(String hash) {
+        this.hash = hash;
     }
 }
 
