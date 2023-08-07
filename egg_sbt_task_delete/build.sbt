@@ -19,11 +19,13 @@ lazy val root = (project in file("."))
 import scala.reflect.io.Directory
 import java.io.File
 
-lazy val prepForDocker = taskKey[Unit]("prepares for docker")
+lazy val prepareForDocker = taskKey[Unit]("prepares for docker")
 
-prepForDocker := { 
+prepareForDocker := { 
     println("running prepForDocker task")
-    val dir = new Directory(new File("./conf/dev_resources"))
+    val dir = new Directory(new File(baseDirectory.value + "/conf/dev_resources"))
     dir.deleteRecursively()
     println("running prepForDocker done")
 }
+
+(Compile / compile) := ((Compile / compile) dependsOn prepareForDocker).value
