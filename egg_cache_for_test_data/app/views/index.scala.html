@@ -1,0 +1,26 @@
+@(env: play.api.Environment)
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>Play REST API</title>
+  </head>
+
+  <body>
+<p>
+  json : <a href="/v1/posts">/v1/posts</a>
+</p>
+<p>
+  json : <a href="/v1/posts/display">display view</a>
+</p>
+<p>
+  devtools : <a href="/devtools">devtools</a>
+</p>
+
+<p>
+env is: @env.mode.toString()
+</p>
+
+  </body>
+</html>

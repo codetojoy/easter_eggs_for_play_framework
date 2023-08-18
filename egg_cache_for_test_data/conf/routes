@@ -1,0 +1,9 @@
+GET     /                           controllers.HomeController.index
+
+->     /v1/posts                    posts.Routes
+
+GET    /devtools                    devtools.DevToolsController.initial(request:Request)
+GET    /devtools/apply                    devtools.DevToolsController.apply(request:Request)
+
+
+

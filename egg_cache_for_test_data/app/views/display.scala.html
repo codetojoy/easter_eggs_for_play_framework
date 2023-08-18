@@ -1,0 +1,32 @@
+@(posts: List[v1.post.PostResource]) 
+
+<!doctype html>
+
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <title>display posts</title>
+  </head>
+
+  <body>
+
+    <p>num posts: @posts.size()</p>
+
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+        <th>
+            <td>title</td>
+            <td>body</td>
+        </th>
+
+        @for(post <- posts) {
+          <tr>
+            <td>@post.getTitle()</td>
+            <td>@post.getBody()</td>
+          </tr>
+        }
+      </tbody>
+    </table>
+
+  </body>
+</html>
