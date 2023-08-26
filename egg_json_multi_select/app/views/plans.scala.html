@@ -1,0 +1,73 @@
+
+@(plans: List[models.Plan], message: String, availableLanguages: Html, selectedLanguages: Html) 
+
+@main {
+    <h2>@message</h2>
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(plan <- plans) {
+        @if(plan.getId() == "18") {
+              <p>id: @plan.getId()</p>
+              <p>status: @plan.getStatus()</p>
+            <form action="http://localhost:9000/updateplan" method="post">
+              <input name="plan-id" type="hidden" value="@plan.getId()"/>
+              <fieldset>
+              <label forid="plan-name">name</label>
+              <input name="plan-name" type="text" value="@plan.getName()"/>
+              </fieldset>
+
+              <fieldset>
+
+              <label forid="my-selector">languages</label>
+              <select
+                id="my-selector"
+                name="payload"
+                data-bind="options: availableCountries, selectedOptions: selectedCountries"
+                size="10"
+                multiple="true"
+              ></select>
+
+              </fieldset>
+
+              <button type="submit">update</button>
+              <button onclick="myButtonHandler(); return false;">TRACER</button>
+            </form>
+        }
+      }
+      </tbody>
+    </table>
+
+    <!-- JS -->
+
+    <script type="text/javascript">
+      let iteration = 1;
+
+      function myButtonHandler() {
+        let numSelected = 0;
+        const prefix = `TRACER handler(${iteration}) - `;
+        const e = document.getElementById("my-selector");
+        if (e != null) {
+          for (opt of e.options) {
+            if (opt.selected === true) {
+              console.log(`${prefix} ${opt.text}`);
+              numSelected++;
+            }
+          }
+        }
+        console.log(`${prefix} num-selected ${numSelected}`);
+        iteration++;
+      }
+
+      var viewModel = {
+        availableCountries: ko.observableArray(ko.toJS(@availableLanguages)),
+        selectedCountries: ko.observableArray(ko.toJS(@selectedLanguages)),
+      };
+
+
+      // ----------------- BIND
+      ko.applyBindings(viewModel);
+    </script>
+
+}
+
