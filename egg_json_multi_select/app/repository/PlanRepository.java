@@ -27,6 +27,19 @@ public class PlanRepository {
         }, executionContext);
     }
 
+    public CompletionStage<Plan> updatePlan(Long id, String planName, List<String> payload) {
+        return supplyAsync(() -> {
+            final Plan originalPlan = DB.find(Plan.class).where().eq("id", id).findOne();
+            System.out.println("TRACER repo oP: " + originalPlan);
+            System.out.println("TRACER TODO update name: " + planName);
+            System.out.println("TRACER TODO update payload: " + payload);
+            // plan.setName(planName);
+            // plan.setPayload(payload);
+            // DB.save(plan);
+            return originalPlan;
+        }, executionContext);
+    }
+
     public CompletionStage<List<Plan>> getPlans() {
         return supplyAsync(() -> {
             return DB.find(Plan.class)

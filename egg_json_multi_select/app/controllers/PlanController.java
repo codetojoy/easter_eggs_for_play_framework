@@ -42,8 +42,7 @@ public class PlanController extends Controller {
             Plan plan = null;
 
             for (var p : plans) {
-                var idStr = "" + id;
-                if (p.getId().equals(idStr)) {
+                if (p.getId() == id) {
                     plan = p;
                 }
             } 
@@ -54,12 +53,32 @@ public class PlanController extends Controller {
         });
     }
 
-/*
     public CompletionStage<Result> updateplan(Http.Request request, Long id) throws Exception {
-        // TODO:
-        return viewplan(request, id);
+        System.out.println("TRACER hello from updateplan!");
+        var formMap = request.body().asFormUrlEncoded();
+
+        String planName = null;
+        String[] payload = null;
+
+        if (formMap.keySet().contains("plan-name")) {
+            planName = formMap.get("plan-name")[0];
+            System.out.println("TRACER received plan-name: " + planName);
+        } 
+
+        if (formMap.keySet().contains("payload")) {
+            payload = formMap.get("payload");
+            System.out.println("TRACER received payload: " + payload);
+        }
+
+        List<String> payloadItems = Arrays.asList(payload);
+        CompletionStage<Plan> planFuture = planRepository.updatePlan(id, planName, payloadItems);
+
+        return planFuture.thenApply((plan) -> {
+            String message = "successful";
+
+            return ok(views.html.viewplan.render(plan, message, buildHtml(availableLanguages), buildHtml(plan.getPayload())));
+        });
     }
-*/
 
     public CompletionStage<Result> augustlist(Http.Request request) throws Exception {
         Timer timer = new Timer();
@@ -97,7 +116,7 @@ public class PlanController extends Controller {
         });
     }
 
-    private Html buildHtml(List<String> languages) {
+    private String buildJson(List<String> languages) {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         int max = languages.size();
@@ -110,7 +129,17 @@ public class PlanController extends Controller {
             i++;
         }
         builder.append("]");
-        Html html = Html.apply(builder.toString());
+
+        return builder.toString();
+    }
+
+    private String buildJson(String[] languages) {
+        return buildJson(Arrays.asList(languages));
+    
+    }
+
+    private Html buildHtml(List<String> languages) {
+        Html html = Html.apply(buildJson(languages));
 
         return html;
     }

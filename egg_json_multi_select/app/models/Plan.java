@@ -17,8 +17,9 @@ public class Plan {
 
     private static final long serialVersionUID = 1L;
 
+    @Id
     @Constraints.Required
-    private String id;
+    private Long id;
 
     @Constraints.Required
     private String name;
@@ -38,11 +39,11 @@ public class Plan {
         this.payload = payload;
     }
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 

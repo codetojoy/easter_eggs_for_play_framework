@@ -6,7 +6,7 @@
     <p>id: @plan.getId()</p>
     <p>status: @plan.getStatus()</p>
 
-    <form action="http://localhost:9000/updateplan/@plan.getId()" method="post">
+    <form action="http://localhost:9000/plans/@plan.getId()" method="post">
         <input name="plan-id" type="hidden" value="@plan.getId()"/>
         <fieldset>
             <label forid="plan-name">name</label>
