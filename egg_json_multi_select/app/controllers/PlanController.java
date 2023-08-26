@@ -34,6 +34,33 @@ public class PlanController extends Controller {
         this.availableLanguages = List.of("Arabic","Chinese","English","French","German","Spanish","Ukrainian");
     }
 
+    public CompletionStage<Result> viewplan(Http.Request request, Long id) throws Exception {
+        CompletionStage<Integer> countFuture = planRepository.getPlanCount();
+        CompletionStage<List<Plan>> plansFuture = planRepository.getPlans();
+
+        return countFuture.thenCombine(plansFuture, (count, plans) -> {
+            Plan plan = null;
+
+            for (var p : plans) {
+                var idStr = "" + id;
+                if (p.getId().equals(idStr)) {
+                    plan = p;
+                }
+            } 
+
+            String message = "successful";
+
+            return ok(views.html.viewplan.render(plan, message, buildHtml(availableLanguages), buildHtml(plan.getPayload())));
+        });
+    }
+
+/*
+    public CompletionStage<Result> updateplan(Http.Request request, Long id) throws Exception {
+        // TODO:
+        return viewplan(request, id);
+    }
+*/
+
     public CompletionStage<Result> augustlist(Http.Request request) throws Exception {
         Timer timer = new Timer();
         CompletionStage<Integer> countFuture = planRepository.getPlanCount();
@@ -70,7 +97,7 @@ public class PlanController extends Controller {
         });
     }
 
-    Html buildHtml(List<String> languages) {
+    private Html buildHtml(List<String> languages) {
         StringBuilder builder = new StringBuilder();
         int i = 0;
         int max = languages.size();

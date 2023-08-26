@@ -6,6 +6,8 @@
 GET     /                           controllers.HomeController.index()
 
 GET     /plans/quicklist            controllers.PlanController.augustlist(request: Request)
+GET     /plans/:id                  controllers.PlanController.viewplan(request: Request, id: Long)
+# POST    /plans/:id                 controllers.PlanController.updateplan(request: Request, id: Long)
 
 # Map static resources from the /public folder to the /assets URL path
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
