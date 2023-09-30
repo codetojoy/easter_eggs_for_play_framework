@@ -1,0 +1,4 @@
+# /api/game
+
+GET     /players                    controllers.api.game.PlayerController.listPlayers(request: Request)
+

@@ -1,0 +1,8 @@
+# routes
+
+->  /api/game                         player.Routes
+->  /api/widgets                      widgets.Routes
+
+# Home page
+GET     /                           controllers.HomeController.index
+
