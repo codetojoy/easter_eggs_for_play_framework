@@ -1,0 +1,18 @@
+@import play.mvc.Http.Request
+@(bars: List[Bar])(implicit request: Request)
+
+@main("Bars") {
+
+    <h1>Bars</h1>
+
+    <table>
+        <thead>
+            <tr><th>Id</th><th>Name</th>
+        </thead>
+        <tbody>
+        @for(bar <- bars) {
+            <tr><td>@bar.id</td><td>@bar.name</td></tr>
+        }
+        </tbody>
+    </table>
+}
