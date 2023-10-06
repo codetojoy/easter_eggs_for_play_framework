@@ -1,0 +1,6 @@
+# /api/widgets
+
+GET     /bars                    controllers.api.widgets.bar.BarController.listBars(request: Request)
+
+GET     /foos                    controllers.api.widgets.foo.FooController.listFoos(request: Request)
+

@@ -1,0 +1,14 @@
+@import play.mvc.Http.Request
+@(message: String)
+
+@main("Login") {
+    <h1>Login</h1>
+    <p>message: @message</p>
+
+    <form method="POST" action="http://127.0.0.1:9000/login">
+        <div class="h-captcha" data-sitekey="20000000-ffff-ffff-ffff-000000000002"></div>
+        <div></div>
+        <script src="https://js.hcaptcha.com/1/api.js" async defer></script>
+        <button type="submit">Go</button>
+    </form>
+}

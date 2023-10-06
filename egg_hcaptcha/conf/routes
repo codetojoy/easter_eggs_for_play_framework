@@ -1,0 +1,11 @@
+# routes
+
+->  /api/game                         player.Routes
+->  /api/widgets                      widgets.Routes
+
+# Home page
+GET     /                           controllers.HomeController.index
+
+GET     /login                      controllers.AuthController.index
+POST    /login                      controllers.AuthController.authenticate(request:Request)
+
