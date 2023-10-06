@@ -41,17 +41,6 @@ public class AuthController extends Controller {
         return ok(views.html.login.render(message));
     }
 
-    /*
-token = request.POST[`"h-captcha-response"]
-params = {
-   "secret": "ES_62cd990f9d414b97bde58e4f70ac7835",
-   "response": token
-}
-json = http.POST("https://hcaptcha.com/siteverify", params)
-
-    */
-
-
     private String getToken(Http.Request request, String fieldName) {
         String token = "";
         String[] fields = request.body().asFormUrlEncoded().get(fieldName);
