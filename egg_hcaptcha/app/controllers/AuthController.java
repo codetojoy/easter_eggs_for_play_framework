@@ -27,18 +27,23 @@ public class AuthController extends Controller {
 
     private static final String H_CAPTCHA_RESPONSE = "h-captcha-response";
     private static final String H_CAPTCHA_SECRET = "hcaptcha.secret";
+    private static final String H_CAPTCHA_SITE_KEY = "hcaptcha.site.key";
     private static final String SITE_VERIFY_URL = "https://api.hcaptcha.com/siteverify";
+
+    private final String hcaptchaSecret;
+    private final String hcaptchaSiteKey;
 
     @Inject
     public AuthController(Config config, WSClient wsClient) {
         this.config = config;
         this.wsClient = wsClient;
+        hcaptchaSecret = config.getString(H_CAPTCHA_SECRET);
+        hcaptchaSiteKey = config.getString(H_CAPTCHA_SITE_KEY);
     }
 
     public Result index() {
-        String hcaptchaSecret = config.getString(H_CAPTCHA_SECRET);
         String message = "hcaptchaSecret len: " + hcaptchaSecret.length();
-        return ok(views.html.login.render(message));
+        return ok(views.html.login.render(message, hcaptchaSiteKey));
     }
 
     private String getToken(Http.Request request, String fieldName) {
@@ -51,15 +56,14 @@ public class AuthController extends Controller {
     }
 
     private String callSiteVerify(String token) throws Exception {
-        String hcaptchaSecret = config.getString(H_CAPTCHA_SECRET);
 
-        RequestParams requestParams = new RequestParams();
-        requestParams.setSecret(hcaptchaSecret);
-        requestParams.setResponse(token);
-        JsonNode json = Json.toJson(requestParams);
-        System.out.println("TRACER json from rp: " + json.toString());
+        String paramsFormat = "secret=%s&response=%s";
+        String params = String.format(paramsFormat, hcaptchaSecret, token);
+        System.out.println("TRACER params: " + params);
 
-        WSResponse response = wsClient.url(SITE_VERIFY_URL).post(json).toCompletableFuture().get();
+        WSResponse response = wsClient.url(SITE_VERIFY_URL)
+                                      .setContentType("application/x-www-form-urlencoded")
+                                      .post(params).toCompletableFuture().get();
         return response.asJson().toString();
     }
 
