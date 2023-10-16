@@ -1,0 +1,7 @@
+# routes
+
+# Home page
+GET     /                           controllers.HomeController.index
+
+GET     /ping                       controllers.SandboxController.ping
+GET     /consume                    controllers.SandboxController.consume
