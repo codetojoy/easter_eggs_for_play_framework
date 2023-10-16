@@ -1,0 +1,6 @@
+
+GET     /                           controllers.HomeController.index
+
+GET     /ping                       controllers.SandboxController.ping(request: Request)
+
+POST    /consume                    controllers.SandboxController.consume(request: Request)

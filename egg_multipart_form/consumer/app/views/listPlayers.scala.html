@@ -1,0 +1,18 @@
+@import play.mvc.Http.Request
+@(players: List[Player])(implicit request: Request)
+
+@main("Players") {
+
+    <h1>Players</h1>
+
+    <table>
+        <thead>
+            <tr><th>Name</th><th>Strategy</th>
+        </thead>
+        <tbody>
+        @for(p <- players) {
+            <tr><td>@p.name (@p.numGames, @p.numWins)</td><td>@p.strategy</td></tr>
+        }
+        </tbody>
+    </table>
+}
