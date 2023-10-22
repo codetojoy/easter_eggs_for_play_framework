@@ -1,0 +1,151 @@
+2023-10-22 20:00:18,044 [INFO] from play.api.db.DefaultDBApi in play-dev-mode-akka.actor.default-dispatcher-7 - Database [default] initialized
+2023-10-22 20:00:18,050 [INFO] from play.api.db.HikariCPConnectionPool in play-dev-mode-akka.actor.default-dispatcher-7 - Creating Pool for datasource 'default'
+2023-10-22 20:00:18,106 [INFO] from play.api.db.HikariCPConnectionPool in play-dev-mode-akka.actor.default-dispatcher-7 - datasource [default] bound to JNDI as DefaultDS
+2023-10-22 20:00:18,147 [INFO] from akka.event.slf4j.Slf4jLogger in application-akka.actor.default-dispatcher-6 - Slf4jLogger started
+2023-10-22 20:00:18,244 [WARN] from jakarta.persistence.spi in play-dev-mode-akka.actor.default-dispatcher-7 - jakarta.persistence.spi::No valid providers found.
+2023-10-22 20:00:18,518 [ERROR] from play.api.http.DevHttpErrorHandler in play-dev-mode-akka.actor.default-dispatcher-7 - 
+
+! @83ai1ane6 - Internal server error, for (GET) [/] ->
+ 
+play.api.PlayException: Execution exception[[CreationException: Unable to create injector, see the following errors:
+
+1) [Guice/ErrorInjectingConstructor]: PersistenceException: No Persistence provider for EntityManager named defaultPersistenceUnit
+  at DefaultJPAApi$JPAApiProvider.<init>(DefaultJPAApi.java:49)
+  at DefaultJPAApi$JPAApiProvider.class(DefaultJPAApi.java:34)
+  while locating DefaultJPAApi$JPAApiProvider
+  at JPAPostRepository.<init>(JPAPostRepository.java:31)
+      \_ for 1st parameter
+  at JPAPostRepository.class(JPAPostRepository.java:28)
+  while locating JPAPostRepository
+  at Module.configure(Module.java:28)
+      \_ installed by: Modules$OverrideModule -> Module
+  while locating PostRepository
+
+Learn more:
+  https://github.com/google/guice/wiki/ERROR_INJECTING_CONSTRUCTOR
+
+1 error
+
+======================
+Full classname legend:
+======================
+DefaultJPAApi$JPAApiProvider: "play.db.jpa.DefaultJPAApi$JPAApiProvider"
+JPAPostRepository:            "v1.post.JPAPostRepository"
+Modules$OverrideModule:       "com.google.inject.util.Modules$OverrideModule"
+PersistenceException:         "jakarta.persistence.PersistenceException"
+PostRepository:               "v1.post.PostRepository"
+========================
+End of classname legend:
+========================
+]]
+	at play.api.http.HttpErrorHandlerExceptions$.$anonfun$convertToPlayException$3(HttpErrorHandler.scala:407)
+	at scala.Option.getOrElse(Option.scala:201)
+	at play.api.http.HttpErrorHandlerExceptions$.convertToPlayException(HttpErrorHandler.scala:407)
+	at play.api.http.HttpErrorHandlerExceptions$.throwableToUsefulException(HttpErrorHandler.scala:390)
+	at play.core.server.DevServerStart$DevServerApplicationProvider$1.reload(DevServerStart.scala:265)
+	at play.core.server.DevServerStart$DevServerApplicationProvider$1.get(DevServerStart.scala:190)
+	at play.core.server.AkkaHttpServer.handleRequest(AkkaHttpServer.scala:320)
+	at play.core.server.AkkaHttpServer.$anonfun$createServerBinding$1(AkkaHttpServer.scala:224)
+	at akka.stream.impl.fusing.MapAsync$$anon$30.onPush(Ops.scala:1309)
+	at akka.stream.impl.fusing.GraphInterpreter.processPush(GraphInterpreter.scala:542)
+	at akka.stream.impl.fusing.GraphInterpreter.processEvent(GraphInterpreter.scala:496)
+	at akka.stream.impl.fusing.GraphInterpreter.execute(GraphInterpreter.scala:390)
+	at akka.stream.impl.fusing.GraphInterpreterShell.runBatch(ActorGraphInterpreter.scala:650)
+	at akka.stream.impl.fusing.GraphInterpreterShell$AsyncInput.execute(ActorGraphInterpreter.scala:521)
+	at akka.stream.impl.fusing.GraphInterpreterShell.processEvent(ActorGraphInterpreter.scala:625)
+	at akka.stream.impl.fusing.ActorGraphInterpreter.akka$stream$impl$fusing$ActorGraphInterpreter$$processEvent(ActorGraphInterpreter.scala:800)
+	at akka.stream.impl.fusing.ActorGraphInterpreter$$anonfun$receive$1.applyOrElse(ActorGraphInterpreter.scala:818)
+	at akka.actor.Actor.aroundReceive(Actor.scala:537)
+	at akka.actor.Actor.aroundReceive$(Actor.scala:535)
+	at akka.stream.impl.fusing.ActorGraphInterpreter.aroundReceive(ActorGraphInterpreter.scala:716)
+	at akka.actor.ActorCell.receiveMessage(ActorCell.scala:579)
+	at akka.actor.ActorCell.invoke(ActorCell.scala:547)
+	at akka.dispatch.Mailbox.processMailbox(Mailbox.scala:270)
+	at akka.dispatch.Mailbox.run(Mailbox.scala:231)
+	at akka.dispatch.Mailbox.exec(Mailbox.scala:243)
+	at java.base/java.util.concurrent.ForkJoinTask.doExec(ForkJoinTask.java:290)
+	at java.base/java.util.concurrent.ForkJoinPool$WorkQueue.topLevelExec(ForkJoinPool.java:1020)
+	at java.base/java.util.concurrent.ForkJoinPool.scan(ForkJoinPool.java:1656)
+	at java.base/java.util.concurrent.ForkJoinPool.runWorker(ForkJoinPool.java:1594)
+	at java.base/java.util.concurrent.ForkJoinWorkerThread.run(ForkJoinWorkerThread.java:177)
+Caused by: com.google.inject.CreationException: Unable to create injector, see the following errors:
+
+1) [Guice/ErrorInjectingConstructor]: PersistenceException: No Persistence provider for EntityManager named defaultPersistenceUnit
+  at DefaultJPAApi$JPAApiProvider.<init>(DefaultJPAApi.java:49)
+  at DefaultJPAApi$JPAApiProvider.class(DefaultJPAApi.java:34)
+  while locating DefaultJPAApi$JPAApiProvider
+  at JPAPostRepository.<init>(JPAPostRepository.java:31)
+      \_ for 1st parameter
+  at JPAPostRepository.class(JPAPostRepository.java:28)
+  while locating JPAPostRepository
+  at Module.configure(Module.java:28)
+      \_ installed by: Modules$OverrideModule -> Module
+  while locating PostRepository
+
+Learn more:
+  https://github.com/google/guice/wiki/ERROR_INJECTING_CONSTRUCTOR
+
+1 error
+
+======================
+Full classname legend:
+======================
+DefaultJPAApi$JPAApiProvider: "play.db.jpa.DefaultJPAApi$JPAApiProvider"
+JPAPostRepository:            "v1.post.JPAPostRepository"
+Modules$OverrideModule:       "com.google.inject.util.Modules$OverrideModule"
+PersistenceException:         "jakarta.persistence.PersistenceException"
+PostRepository:               "v1.post.PostRepository"
+========================
+End of classname legend:
+========================
+
+	at com.google.inject.internal.Errors.throwCreationExceptionIfErrorsExist(Errors.java:589)
+	at com.google.inject.internal.InternalInjectorCreator.injectDynamically(InternalInjectorCreator.java:190)
+	at com.google.inject.internal.InternalInjectorCreator.build(InternalInjectorCreator.java:113)
+	at com.google.inject.Guice.createInjector(Guice.java:87)
+	at com.google.inject.Guice.createInjector(Guice.java:78)
+	at play.api.inject.guice.GuiceBuilder.injector(GuiceInjectorBuilder.scala:200)
+	at play.api.inject.guice.GuiceApplicationBuilder.build(GuiceApplicationBuilder.scala:176)
+	at play.api.inject.guice.GuiceApplicationLoader.load(GuiceApplicationLoader.scala:21)
+	at play.core.server.DevServerStart$DevServerApplicationProvider$1.$anonfun$reload$2(DevServerStart.scala:233)
+	at play.utils.Threads$.withContextClassLoader(Threads.scala:22)
+	at play.core.server.DevServerStart$DevServerApplicationProvider$1.reload(DevServerStart.scala:225)
+	... 25 common frames omitted
+Caused by: jakarta.persistence.PersistenceException: No Persistence provider for EntityManager named defaultPersistenceUnit
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:86)
+	at jakarta.persistence.Persistence.createEntityManagerFactory(Persistence.java:55)
+	at play.db.jpa.DefaultJPAApi.lambda$start$0(DefaultJPAApi.java:74)
+	at java.base/java.lang.Iterable.forEach(Iterable.java:75)
+	at play.db.jpa.DefaultJPAApi.start(DefaultJPAApi.java:70)
+	at play.db.jpa.DefaultJPAApi$JPAApiProvider.<init>(DefaultJPAApi.java:57)
+	at play.db.jpa.DefaultJPAApi$JPAApiProvider$$FastClassByGuice$$60fffd0.GUICE$TRAMPOLINE(<generated>)
+	at play.db.jpa.DefaultJPAApi$JPAApiProvider$$FastClassByGuice$$60fffd0.apply(<generated>)
+	at com.google.inject.internal.DefaultConstructionProxyFactory$FastClassProxy.newInstance(DefaultConstructionProxyFactory.java:82)
+	at com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:114)
+	at com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:91)
+	at com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:300)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:169)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:45)
+	at com.google.inject.internal.BoundProviderFactory.get(BoundProviderFactory.java:58)
+	at com.google.inject.internal.SingleParameterInjector.inject(SingleParameterInjector.java:40)
+	at com.google.inject.internal.SingleParameterInjector.getAll(SingleParameterInjector.java:60)
+	at com.google.inject.internal.ConstructorInjector.provision(ConstructorInjector.java:113)
+	at com.google.inject.internal.ConstructorInjector.construct(ConstructorInjector.java:91)
+	at com.google.inject.internal.ConstructorBindingImpl$Factory.get(ConstructorBindingImpl.java:300)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:169)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:45)
+	at com.google.inject.internal.FactoryProxy.get(FactoryProxy.java:60)
+	at com.google.inject.internal.ProviderToInternalFactoryAdapter.get(ProviderToInternalFactoryAdapter.java:40)
+	at com.google.inject.internal.SingletonScope$1.get(SingletonScope.java:169)
+	at com.google.inject.internal.InternalFactoryToProviderAdapter.get(InternalFactoryToProviderAdapter.java:45)
+	at com.google.inject.internal.InternalInjectorCreator.loadEagerSingletons(InternalInjectorCreator.java:213)
+	at com.google.inject.internal.InternalInjectorCreator.injectDynamically(InternalInjectorCreator.java:186)
+	... 34 common frames omitted
+2023-10-22 20:00:28,206 [INFO] from play.api.internal.libs.concurrent.CoordinatedShutdownSupport in pool-5-thread-9 - Starting synchronous coordinated shutdown with ServerStoppedReason reason and 40000 milliseconds timeout
+2023-10-22 20:00:28,209 [INFO] from play.core.server.AkkaHttpServer in pool-5-thread-9 - Stopping Akka HTTP server...
+2023-10-22 20:00:28,208 [INFO] from akka.actor.CoordinatedShutdown in play-dev-mode-akka.actor.default-dispatcher-10 - Running CoordinatedShutdown with reason [ServerStoppedReason]
+2023-10-22 20:00:28,215 [INFO] from play.core.server.AkkaHttpServer in play-dev-mode-akka.actor.internal-dispatcher-2 - Unbinding /0:0:0:0:0:0:0:0:9000
+2023-10-22 20:00:28,220 [INFO] from play.core.server.AkkaHttpServer in play-dev-mode-akka.actor.internal-dispatcher-2 - Terminating server binding for /0:0:0:0:0:0:0:0:9000
+2023-10-22 20:00:28,233 [INFO] from play.core.server.AkkaHttpServer in play-dev-mode-akka.actor.internal-dispatcher-2 - Running provided shutdown stop hooks
