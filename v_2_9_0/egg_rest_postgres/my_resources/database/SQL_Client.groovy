@@ -7,7 +7,7 @@
 import groovy.sql.*
 import org.postgresql.*
 
-def sql = Sql.newInstance("jdbc:postgresql://127.0.0.1:5432/sandbox", "postgres","swordfish", "org.postgresql.Driver")
+def sql = Sql.newInstance("jdbc:postgresql://127.0.0.1:5432/sandbox", "postgres","TODO", "org.postgresql.Driver")
 
 // sql.execute("DROP DATABASE IF EXISTS sandbox")
 // sql.execute("CREATE DATABASE sandbox")

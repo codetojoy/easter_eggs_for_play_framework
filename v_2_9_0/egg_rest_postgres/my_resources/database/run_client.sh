@@ -1,5 +1,5 @@
 #!/bin/bash
 
-pgcli postgresql://postgres:swordfish@localhost:5432/postgres
+pgcli postgresql://postgres:TODO@localhost:5432/postgres
 
 
