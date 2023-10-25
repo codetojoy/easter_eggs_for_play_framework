@@ -1,15 +1,19 @@
+lazy val scala213 = "2.13.12"
+lazy val scala3 = "3.3.1"
+
 lazy val root = (project in file("."))
   .enablePlugins(PlayJava)
   .settings(
     name := "play-java-rest-api-example",
     version := "1.0-SNAPSHOT",
-    scalaVersion := "2.13.12",
+    scalaVersion := scala213,
+    crossScalaVersions := Seq(scala213, scala3),
     libraryDependencies ++= Seq(
       guice,
       javaJpa,
-      "org.postgresql" % "postgresql" % "42.5.2",
-      "org.hibernate" % "hibernate-core" % "5.6.12.Final",
-      "io.dropwizard.metrics" % "metrics-core" % "4.2.18",
+      "org.postgresql" % "postgresql" % "42.6.0",
+      "org.hibernate" % "hibernate-core" % "6.3.1.Final",
+      "io.dropwizard.metrics" % "metrics-core" % "4.2.21",
       "com.palominolabs.http" % "url-builder" % "1.1.5",
       "net.jodah" % "failsafe" % "2.4.4",
     ),
@@ -22,11 +26,12 @@ lazy val root = (project in file("."))
     )
   )
 
-val gatlingVersion = "3.3.1"
+val gatlingVersion = "3.9.5"
 lazy val gatling = (project in file("gatling"))
   .enablePlugins(GatlingPlugin)
   .settings(
-    scalaVersion := "2.12.17",
+    scalaVersion := scala213,
+    crossScalaVersions := Seq(scala213, scala3),
     libraryDependencies ++= Seq(
       "io.gatling.highcharts" % "gatling-charts-highcharts" % gatlingVersion % Test,
       "io.gatling" % "gatling-test-framework" % gatlingVersion % Test
