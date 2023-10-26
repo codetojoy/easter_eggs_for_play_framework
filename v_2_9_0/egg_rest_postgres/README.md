@@ -8,7 +8,7 @@
 ### Usage
 
 * `./run.sh`
-* I use Java `openjdk 11-ea 2018-09-25` from SDKMan!
+* tested with Java `openjdk 11-ea` and `17.0.5-oracle` from SDKMan!
 
 ### changes for V 2.9.0-RC3
 
