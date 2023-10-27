@@ -2,7 +2,7 @@ package models;
 
 import play.data.validation.Constraints;
 
-import javax.persistence.*;
+import jakarta.persistence.*;
 
 /**
  * entity managed by Ebean

@@ -11,7 +11,7 @@ import repository.ReferencePlanRepository;
 import repository.CustomerReferenceRepository;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 

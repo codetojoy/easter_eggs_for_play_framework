@@ -9,7 +9,7 @@ import play.mvc.*;
 import repository.AccountRepository;
 
 import javax.inject.Inject;
-import javax.persistence.PersistenceException;
+import jakarta.persistence.PersistenceException;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
