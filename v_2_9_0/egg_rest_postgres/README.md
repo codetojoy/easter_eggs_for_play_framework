@@ -8,7 +8,10 @@
 ### Usage
 
 * `./run.sh`
-* tested with Java `openjdk 11-ea` and `17.0.5-oracle` from SDKMan!
+* tested with Java with these (via SDKMan!) :
+    * openjdk 11-ea
+    * 17.0.5-oracle
+    * 21.0.1-oracle
 
 ### changes for V 2.9.0-RC3
 
