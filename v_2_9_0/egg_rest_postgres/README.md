@@ -26,6 +26,6 @@
     * `scalaVersion := "2.13.12"`
     * use Hibernate 6.x 
 * s/HttpExecutionContext/ClassLoaderExecutionContext/
-* s/import java.persistence/import jakarta.persistence/
+* s/import javax.persistence/import jakarta.persistence/
 * CRUCIAL: see [here](https://github.com/orgs/playframework/discussions/11985#discussioncomment-7379124)
 
