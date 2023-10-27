@@ -13,13 +13,13 @@
     * 17.0.5-oracle
     * 21.0.1-oracle
 
-### changes for V 2.9.0-RC3
+### changes for V 2.9.0
 
 * from [here](https://www.playframework.com/documentation/2.9.x/Migration29)
 * compare to [this project](https://github.com/codetojoy/easter_eggs_for_play_framework/tree/main/egg_rest_postgres) (using Play 2.8.x)
     * especially the files `conf/application.conf`, `build.sbt`, `conf/META-INF/persistence.xml`
 * project/plugins.sbt
-    * `addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0-RC3")`
+    * `addSbtPlugin("com.typesafe.play" % "sbt-plugin" % "2.9.0")`
 * project/build.properties
     * `sbt.version=1.9.6`
 * build.sbt
