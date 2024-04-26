@@ -2,6 +2,7 @@
 
 Some basic examples for Play Framework. Usage of *egg* here is [SSCCE](http://sscce.org/) **not** a [hidden feature](https://en.wikipedia.org/wiki/Easter_egg_(media)).
 
+Some of these do not use a database; others use PostgreSQL via Docker. Look for a local `my_resources/database` folder or use [this project](https://github.com/codetojoy/gists/tree/main/postgres_jun_2023).
 
 * egg_caffeine
     * simple example of caffeine cache from [this doc](https://www.playframework.com/documentation/2.8.x/ScalaCache)
