@@ -2,10 +2,6 @@
 
 Some basic examples for Play Framework. Usage of *egg* here is [SSCCE](http://sscce.org/) **not** a [hidden feature](https://en.wikipedia.org/wiki/Easter_egg_(media)).
 
-* egg_rest_postgres
-    * from Play examples, REST api 
-    * also has `Timer.java` example
-    * this one has the best documentation (e.g. for Docker PostgreSQL)
 
 * egg_caffeine
     * simple example of caffeine cache from [this doc](https://www.playframework.com/documentation/2.8.x/ScalaCache)
@@ -30,5 +26,15 @@ Some basic examples for Play Framework. Usage of *egg* here is [SSCCE](http://ss
 
 * egg_posts_from_udemy
     * example from Udemy course 
+
+* egg_rest_postgres
+    * from Play examples, REST api 
+    * also has `Timer.java` example
+    * uses PostgreSQL via Docker (in `~/my_resources/database`)
+
+* egg_reference_plan
+    * from Play examples, REST api 
+    * uses PostgreSQL via Docker with [this project](https://github.com/codetojoy/gists/tree/main/postgres_jun_2023) which is the most complete in terms of PgAdmin, population scripts, etc
+    * this one was ultimately used to experiment with a Postgres stored procedure
 
 ### test message 
