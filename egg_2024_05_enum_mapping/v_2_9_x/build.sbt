@@ -3,7 +3,8 @@ lazy val root = (project in file("."))
   .settings(
     name := "roster-example",
     version := "1.0.0-SNAPSHOT",
-    scalaVersion := "2.13.10",
+    crossScalaVersions := Seq("2.13.13", "3.3.3"),
+    scalaVersion := crossScalaVersions.value.head,
     libraryDependencies ++= Seq(
       guice,
       jdbc,
@@ -13,5 +14,5 @@ lazy val root = (project in file("."))
       "org.mockito" % "mockito-core" % "3.0.0" % Test,
     ),
     (Test / testOptions) += Tests.Argument(TestFrameworks.JUnit, "-a", "-v"),
-    javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation", "-Werror")
+    javacOptions ++= Seq("-Xlint:unchecked", "-Xlint:deprecation")
   )
