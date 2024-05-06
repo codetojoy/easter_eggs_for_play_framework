@@ -2,9 +2,11 @@
 ### Summary
 
 * quick app to read a list of `Roster` (players) from the database
+    * and `League`
 * testing mapping an enum in Ebean 
 * this is v 2.8.x ; current problem is in 2.9.x
 * use Java 11
+* LATEST: if Roster.java and League.java use different enum mappings, runtime exception
 
 ### Details
 
