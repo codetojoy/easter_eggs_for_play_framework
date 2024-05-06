@@ -12,6 +12,7 @@ GET     /computers                  controllers.HomeController.list(request: Req
 GET     /computers/new              controllers.HomeController.create(request: Request)
 POST    /computers                  controllers.HomeController.save(request: Request)
 
+GET     /league                     controllers.LeagueController.list(request: Request)
 GET     /roster                     controllers.RosterController.list(request: Request)
 
 GET     /accounts/quicklist         controllers.AccountController.quicklist(request: Request)

@@ -2,16 +2,16 @@
 ### Summary
 
 * quick app to read a list of `Roster` (players) from the database
+* also `League` to test dual mappings
 * testing mapping an enum in Ebean 
 * this is 2.9.x
 
 ### changes from 2.8.x
 
 * javax.persistence
-* attempt to use Java 21 didn't work, even with sbt 1.9.9`
 * change build.sbt for new Scala versions
 * remove "-Werror" from build.sbt
-* LATEST: the error cannot be reproduced
+* LATEST: problem can be reproduced in 2.8.x 
     * elsewhere, I get a problem with mapping enums
 
 ### Details
