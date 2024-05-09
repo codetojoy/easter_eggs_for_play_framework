@@ -4,7 +4,7 @@ import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
-import play.libs.concurrent.HttpExecutionContext;
+import play.libs.concurrent.ClassLoaderExecutionContext;
 import play.mvc.*;
 import repository.AccountRepository;
 
@@ -16,15 +16,15 @@ import java.util.concurrent.CompletionStage;
 public class AccountController extends Controller {
 
     private final AccountRepository accountRepository;
-    private final HttpExecutionContext httpExecutionContext;
+    private final ClassLoaderExecutionContext classLoaderExecutionContext;
     private final MessagesApi messagesApi;
 
     @Inject
     public AccountController(AccountRepository accountRepository,
-                          HttpExecutionContext httpExecutionContext,
+                          ClassLoaderExecutionContext classLoaderExecutionContext,
                           MessagesApi messagesApi) {
         this.accountRepository = accountRepository;
-        this.httpExecutionContext = httpExecutionContext;
+        this.classLoaderExecutionContext = classLoaderExecutionContext;
         this.messagesApi = messagesApi;
     }
 
@@ -32,7 +32,7 @@ public class AccountController extends Controller {
         // Run a db operation in another thread (using DatabaseExecutionContext)
         return accountRepository.getAccounts().thenApplyAsync(accountMap -> {
             return ok(views.html.accounts.render(accountMap));
-        }, httpExecutionContext.current());
+        }, classLoaderExecutionContext.current());
     }
 
     List<String> getAccountIds(AccountMap accountMap) {
@@ -54,6 +54,6 @@ public class AccountController extends Controller {
             AccountMap accountMap = new AccountMap(map); 
 
             return ok(views.html.accounts.render(accountMap));
-        }, httpExecutionContext.current());
+        }, classLoaderExecutionContext.current());
     }
 }

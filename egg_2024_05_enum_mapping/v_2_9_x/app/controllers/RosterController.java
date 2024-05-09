@@ -4,7 +4,7 @@ import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
-import play.libs.concurrent.HttpExecutionContext;
+import play.libs.concurrent.ClassLoaderExecutionContext;
 import play.mvc.*;
 import repository.RosterRepository;
 
@@ -16,15 +16,15 @@ import java.util.concurrent.CompletionStage;
 public class RosterController extends Controller {
 
     private final RosterRepository rosterRepository;
-    private final HttpExecutionContext httpExecutionContext;
+    private final ClassLoaderExecutionContext classLoaderExecutionContext;
     private final MessagesApi messagesApi;
 
     @Inject
     public RosterController(RosterRepository rosterRepository,
-                          HttpExecutionContext httpExecutionContext,
+                          ClassLoaderExecutionContext classLoaderExecutionContext,
                           MessagesApi messagesApi) {
         this.rosterRepository = rosterRepository;
-        this.httpExecutionContext = httpExecutionContext;
+        this.classLoaderExecutionContext = classLoaderExecutionContext;
         this.messagesApi = messagesApi;
     }
 
@@ -32,6 +32,6 @@ public class RosterController extends Controller {
         // Run a db operation in another thread (using DatabaseExecutionContext)
         return rosterRepository.getRoster().thenApplyAsync(rosterList -> {
             return ok(views.html.roster.render(rosterList));
-        }, httpExecutionContext.current());
+        }, classLoaderExecutionContext.current());
     }
 }

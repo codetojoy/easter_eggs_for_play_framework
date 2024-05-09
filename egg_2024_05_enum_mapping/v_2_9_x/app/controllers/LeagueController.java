@@ -4,7 +4,7 @@ import models.*;
 import play.data.Form;
 import play.data.FormFactory;
 import play.i18n.MessagesApi;
-import play.libs.concurrent.HttpExecutionContext;
+import play.libs.concurrent.ClassLoaderExecutionContext;
 import play.mvc.*;
 import repository.LeagueRepository;
 
@@ -16,15 +16,15 @@ import java.util.concurrent.CompletionStage;
 public class LeagueController extends Controller {
 
     private final LeagueRepository leagueRepository;
-    private final HttpExecutionContext httpExecutionContext;
+    private final ClassLoaderExecutionContext classLoaderExecutionContext;
     private final MessagesApi messagesApi;
 
     @Inject
     public LeagueController(LeagueRepository leagueRepository,
-                          HttpExecutionContext httpExecutionContext,
+                          ClassLoaderExecutionContext classLoaderExecutionContext,
                           MessagesApi messagesApi) {
         this.leagueRepository = leagueRepository;
-        this.httpExecutionContext = httpExecutionContext;
+        this.classLoaderExecutionContext = classLoaderExecutionContext;
         this.messagesApi = messagesApi;
     }
 
@@ -32,6 +32,6 @@ public class LeagueController extends Controller {
         // Run a db operation in another thread (using DatabaseExecutionContext)
         return leagueRepository.getLeague().thenApplyAsync(leagueList -> {
             return ok(views.html.league.render(leagueList));
-        }, httpExecutionContext.current());
+        }, classLoaderExecutionContext.current());
     }
 }
