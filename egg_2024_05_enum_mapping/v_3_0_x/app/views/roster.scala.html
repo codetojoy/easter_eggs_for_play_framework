@@ -1,0 +1,18 @@
+
+@(roster: List[models.Roster]) 
+
+@main {
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(rosterMember <- roster) {
+        <tr>
+          <td>@rosterMember.getId()</td>
+          <td>@rosterMember.getName()</td>
+          <td>@rosterMember.getStatus()</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+

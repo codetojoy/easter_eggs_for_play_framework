@@ -1,0 +1,18 @@
+
+@(league: List[models.League]) 
+
+@main {
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(leagueMember <- league) {
+        <tr>
+          <td>@leagueMember.getId()</td>
+          <td>@leagueMember.getName()</td>
+          <td>@leagueMember.getStatus()</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+
