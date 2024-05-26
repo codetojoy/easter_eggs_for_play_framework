@@ -1,11 +1,11 @@
 
 plugins {
     id("java")
-    id("io.ebean") version "15.3.0"
+    id("io.ebean") version "15.1.0"
     id("application")
 }
 
-project.ext.ebeanVersion = "15.3.0"
+project.ext.ebeanVersion = "15.1.0"
 
 project.ext.pgVersion = "42.7.1"
 project.ext.hikariVersion = "5.1.0"
