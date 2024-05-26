@@ -2,6 +2,9 @@ package app;
 
 import models.*;
 import app.tasks.*;
+import services.*;
+
+import com.google.inject.*;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -9,20 +12,42 @@ import com.zaxxer.hikari.HikariDataSource;
 import io.ebean.Database;
 import io.ebean.config.UnderscoreNamingConvention;
 
+import java.util.*;
 import javax.sql.DataSource;
 
-import java.util.*;
+import play.*;
+import play.inject.guice.GuiceApplicationBuilder;
 
 public class App {
     public static void main(String[] args) {
         try {
             // -------------------------------------
             // change this:
-            Task task = new SimpleTask();
+
+            App app = new App();
+            DataSource dataSource = app.buildDataSource();
+            Database database = Database.builder().dataSource(dataSource).namingConvention(new UnderscoreNamingConvention()).build();
+
+            // Injector injector = Guice.createInjector();
+            // BookService bookService = injector.getInstance(BookService.class);
+
+            Application application = new GuiceApplicationBuilder().build();
+            play.inject.Injector injector = application.injector();
+
+            Task task = injector.instanceOf(SimpleBookServiceTask.class);
+            task.run(database);
+            
+/*
+            BookService bookService = injector.instanceOf(BookService.class);
+            System.out.println("TRACER found bookService? " + bookService);
+            List<Book> books = bookService.getBooks();
+            System.out.println("TRACER found # books: " + books.size());
+            // Task task = new SimpleTask();
 
             // -------------------------------------
-            App app = new App();
-            app.run(task);
+            // App app = new App();
+            // app.run(task);
+*/
         } catch (Exception ex) {
             System.err.println("caught exception: " + ex.getMessage());
         }
