@@ -21,52 +21,25 @@ import play.inject.guice.GuiceApplicationBuilder;
 public class App {
     public static void main(String[] args) {
         try {
-            // -------------------------------------
-            // change this:
-
-            App app = new App();
-            DataSource dataSource = app.buildDataSource();
+            DataSource dataSource = buildDataSource();
             Database database = Database.builder().dataSource(dataSource).namingConvention(new UnderscoreNamingConvention()).build();
-
-            // Injector injector = Guice.createInjector();
-            // BookService bookService = injector.getInstance(BookService.class);
 
             Application application = new GuiceApplicationBuilder().build();
             play.inject.Injector injector = application.injector();
 
-            Task task = injector.instanceOf(SimpleBookServiceTask.class);
-            task.run(database);
-            
-/*
-            BookService bookService = injector.instanceOf(BookService.class);
-            System.out.println("TRACER found bookService? " + bookService);
-            List<Book> books = bookService.getBooks();
-            System.out.println("TRACER found # books: " + books.size());
-            // Task task = new SimpleTask();
-
             // -------------------------------------
-            // App app = new App();
-            // app.run(task);
-*/
+            // change this:
+            Task task = injector.instanceOf(SimpleEbeanTask.class);
+
+            task.run();
+
+            System.out.println("Ctrl-C to halt application");
         } catch (Exception ex) {
             System.err.println("caught exception: " + ex.getMessage());
         }
     }
 
-    private void run(Task task) {
-        DataSource dataSource = buildDataSource();
-        Database database = Database.builder().dataSource(dataSource).namingConvention(new UnderscoreNamingConvention()).build();
-        boolean result = task.run(database);
-        System.out.println("TRACER App.run RESULT: " + result);
-
-        System.out.println("database shutdown...");
-        database.shutdown();
-        System.out.println("dataSource close...");
-        ((HikariDataSource) dataSource).close();
-        System.out.println("Ready.");
-    }
-
-    private DataSource buildDataSource() {
+    private static DataSource buildDataSource() {
         HikariConfig hikariConfig = new HikariConfig();
         hikariConfig.setJdbcUrl(System.getenv("DB_URL"));
         hikariConfig.setUsername(System.getenv("DB_USERNAME"));

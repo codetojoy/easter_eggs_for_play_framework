@@ -1,15 +1,21 @@
 package app.tasks;
 
-import java.util.*;
+import models.Book;
 
-import models.*;
-
-import io.ebean.*;
+import com.google.inject.Inject;
+import io.ebean.DB;
+import java.util.List;
 
 public class SimpleEbeanTask implements Task {
+
+    @Inject
+    public SimpleEbeanTask() {
+    }
     
     @Override
-    public boolean run(Database database) {
+    public boolean run() {
+        System.out.println("TRACER hello from : " + this.getClass().getSimpleName());
+
         List<Book> books = DB.find(Book.class)
                                      .select("id, title, author")
                                      .findList();

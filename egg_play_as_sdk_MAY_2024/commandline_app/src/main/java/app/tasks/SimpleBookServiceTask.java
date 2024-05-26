@@ -3,8 +3,7 @@ package app.tasks;
 import models.Book;
 import services.BookService;
 
-import com.google.inject.*;
-import io.ebean.*;
+import com.google.inject.Inject;
 import java.util.List;
 
 public class SimpleBookServiceTask implements Task {
@@ -16,7 +15,9 @@ public class SimpleBookServiceTask implements Task {
     }
     
     @Override
-    public boolean run(Database database) {
+    public boolean run() {
+        System.out.println("TRACER hello from : " + this.getClass().getSimpleName());
+
         List<Book> books = bookService.getBooks();
 
         for (Book book : books) {
