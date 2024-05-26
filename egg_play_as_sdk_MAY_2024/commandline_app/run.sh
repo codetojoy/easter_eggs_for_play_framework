@@ -19,9 +19,10 @@ if [ $? -eq "0" ]; then
     echo "TRACER found zip"
 else 
     echo "TRACER building zip"
+    rm -rf dist
     cd ../play_webapp
     sbt clean dist
-    cd ..
+    cd -
 fi
 
 ./gradlew run 

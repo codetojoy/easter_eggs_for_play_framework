@@ -45,7 +45,7 @@ dependencies {
 
 task unpackDistribution(type: Copy) {
     from(zipTree(distZip)) {
-        exclude '**/*ebean*.jar'
+        // exclude '**/*ebean*.jar'
     }
     into distDir
 }
