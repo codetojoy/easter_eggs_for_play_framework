@@ -1,0 +1,5 @@
+GET     /books                      controllers.BookController.list(request: Request)
+GET     /topics                     controllers.TopicController.list(request: Request)
+
+GET     /assets/*file               controllers.Assets.at(path="/public", file)
+
