@@ -1,0 +1,6 @@
+#!/bin/bash
+
+export DB_NAME=CHANGE_ME
+export DB_USERNAME=CHANGE_ME
+export DB_PASSWORD=CHANGE_ME
+
