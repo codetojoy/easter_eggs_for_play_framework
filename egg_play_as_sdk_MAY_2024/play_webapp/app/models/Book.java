@@ -21,6 +21,11 @@ public class Book {
     private List<Topic> topics;
 */
 
+    @Override
+    public String toString() {
+        return "id: " + id + " title: " + title + " author: " + author;
+    }
+
     // getters, setters
 
     public Integer getId() {

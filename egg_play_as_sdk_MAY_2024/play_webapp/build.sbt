@@ -1,8 +1,8 @@
 lazy val root = (project in file("."))
   .enablePlugins(PlayJava, PlayEbean)
   .settings(
-    name := "roster-example",
-    version := "1.0.0-SNAPSHOT",
+    name := "play-as-sdk-example",
+    version := "0.9.0",
     crossScalaVersions := Seq("2.13.13", "3.3.3"),
     scalaVersion := crossScalaVersions.value.head,
     libraryDependencies ++= Seq(
