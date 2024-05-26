@@ -1,8 +1,13 @@
 package models;
 
+import jakarta.persistence.*;
+
 import java.util.*;
 
+@Entity 
 public class Book {
+    private static final long serialVersionUID = 1L;
+
     private Integer id;
     private String title;
     private String author;

@@ -1,8 +1,11 @@
 package services;
 
+import io.ebean.DB;
+
 import models.*;
 
 import javax.inject.Inject;
+import jakarta.persistence.*;
 import java.util.*;
 
 public class BookService {
@@ -11,12 +14,10 @@ public class BookService {
     public BookService() {
     }
 
+    // This is not the "Play ethos" but we just want to test Ebean.
+    // (In Play, we want to be async and query the DB on a different thread.)
     public List<Book> getBooks() {
-        Book book = new Book();
-        book.setId(5150);
-        book.setTitle("Example title");
-        book.setAuthor("Michael Lewis");
-        List<Book> books = List.of(book);
+        List<Book> books = DB.find(Book.class).orderBy("id").findList();
         return books;
     }
 }

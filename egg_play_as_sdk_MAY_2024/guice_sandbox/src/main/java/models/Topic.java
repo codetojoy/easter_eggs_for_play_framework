@@ -1,7 +1,10 @@
 package models;
 
+import jakarta.persistence.*;
+
 import java.util.*;
 
+@Entity 
 public class Topic {
     private static final long serialVersionUID = 1L;
 
