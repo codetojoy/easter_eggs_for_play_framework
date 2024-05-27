@@ -14,7 +14,7 @@ public class SimpleEbeanTask implements Task {
     
     @Override
     public boolean run() {
-        System.out.println("TRACER hello from : " + this.getClass().getSimpleName());
+        emitIdentity();
 
         List<Book> books = DB.find(Book.class)
                                      .select("id, title, author")
