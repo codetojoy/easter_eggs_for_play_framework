@@ -2,6 +2,6 @@
 ###
 
 * guice_sandbox can use Guice and Ebean together
-* commandline_app can run Play app jars with Ebean
-* how does Play populate the Guice modules?
+* commandline_app can run Guice or Ebean, because we start the application
+* is it possible to do without starting the application?
 
