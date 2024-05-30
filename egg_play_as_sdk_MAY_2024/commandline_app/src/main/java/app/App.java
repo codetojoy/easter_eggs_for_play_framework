@@ -1,10 +1,6 @@
 package app;
 
-import models.*;
 import app.tasks.*;
-import services.*;
-
-import com.google.inject.*;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
@@ -15,7 +11,8 @@ import io.ebean.config.UnderscoreNamingConvention;
 import java.util.*;
 import javax.sql.DataSource;
 
-import play.*;
+import play.Application;
+import play.inject.Injector;
 import play.inject.guice.GuiceApplicationBuilder;
 
 public class App {
@@ -25,7 +22,7 @@ public class App {
             Database database = Database.builder().dataSource(dataSource).namingConvention(new UnderscoreNamingConvention()).build();
 
             Application application = new GuiceApplicationBuilder().build();
-            play.inject.Injector injector = application.injector();
+            Injector injector = application.injector();
 
             // -------------------------------------
             // change this:

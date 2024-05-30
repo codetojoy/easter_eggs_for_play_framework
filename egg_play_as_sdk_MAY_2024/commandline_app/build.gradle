@@ -26,26 +26,11 @@ repositories {
 }
 
 dependencies {
-    annotationProcessor "io.ebean:querybean-generator:${ebeanVersion}"
-
-    implementation "io.ebean:ebean:${ebeanVersion}"
-    implementation "io.ebean:ebean-querybean:${ebeanVersion}"
-
-    implementation "org.postgresql:postgresql:${pgVersion}"
-    implementation "com.zaxxer:HikariCP:${hikariVersion}"
-
-    implementation "org.avaje.composite:logback:${avajeLogbackVersion}"
-    implementation "ch.qos.logback:logback-classic:${logbackVersion}"
-    implementation "ch.qos.logback:logback-core:${logbackVersion}"
-    implementation "org.slf4j:slf4j-api:${slf4jVersion}"
-    implementation "org.slf4j:jcl-over-slf4j:${slf4jVersion}"
-
     implementation fileTree(dir: distJars, includes: ['*.jar'])
 }
 
 task unpackDistribution(type: Copy) {
     from(zipTree(distZip)) {
-        // exclude '**/*ebean*.jar'
     }
     into distDir
 }
