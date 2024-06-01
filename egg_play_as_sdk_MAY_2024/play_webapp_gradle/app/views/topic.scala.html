@@ -1,0 +1,17 @@
+
+@(topics: List[models.Topic]) 
+
+@main {
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(topic <- topics) {
+        <tr>
+          <td>@topic.getId()</td>
+          <td>@topic.getName()</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+

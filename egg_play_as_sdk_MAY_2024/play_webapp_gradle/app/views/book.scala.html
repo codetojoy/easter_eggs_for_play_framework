@@ -1,0 +1,18 @@
+
+@(books: List[models.Book]) 
+
+@main {
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(book <- books) {
+        <tr>
+          <td>@book.getId()</td>
+          <td>@book.getTitle()</td>
+          <td>@book.getAuthor()</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+
