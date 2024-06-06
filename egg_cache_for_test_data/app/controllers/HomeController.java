@@ -41,7 +41,19 @@ public class HomeController extends Controller {
         testEnvVar(keyBaz);
     }
 
+    private void allEnvVars() {
+        var entries = config.root().entrySet();
+        int numFound = entries.size();
+        System.out.println("TRACER numFound : " + numFound);
+
+        for (var entry : entries) {
+            var key = entry.getKey();
+            System.out.println("TRACER entry.key: " + key);
+        }
+    }
+
     public Result index() {
+        allEnvVars();
         testEnvVars();
         return ok(views.html.index.render(env));
     }
