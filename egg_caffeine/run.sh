@@ -1,4 +1,4 @@
 #!/bin/bash
 
-sbt run 
+sbt run -jvm-debug 9999 
 
