@@ -9,7 +9,7 @@ import java.security.MessageDigest
 // Usage
 // 1. run the app so that the evolutions are applied
 // 2. halt the app
-// 3. edit 3.sql, e.g. by adding quotes `system_user` around identifiers
+// 3. edit 3.sql, e.g. by adding quotes around future keywords (e.g. `system_user`)
 // 4. run `groovy EvolutionUtility.groovy`
 // 5. apply the output SQL to the database
 // 6. run the app and confirm 
@@ -50,6 +50,8 @@ def file = new File("./conf/evolutions/default/3.sql")
 def sql = file.getText()
 
 def info = new Info()
+
+// inspired by: https://github.com/playframework/playframework/blob/6c23106bbf39fc723c37c97d0aca683aafd2184b/persistence/play-jdbc-evolutions/src/main/scala/play/api/db/evolutions/EvolutionsApi.scala#L692
 
 sql.eachLine { line ->
     if (line ==~ upsMarker) {
