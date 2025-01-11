@@ -6,6 +6,14 @@
 import com.google.common.io.BaseEncoding
 import java.security.MessageDigest
 
+// Usage
+// 1. run the app so that the evolutions are applied
+// 2. halt the app
+// 3. edit 3.sql, e.g. by adding quotes `system_user` around identifiers
+// 4. run `groovy EvolutionUtility.groovy`
+// 5. apply the output SQL to the database
+// 6. run the app and confirm 
+
 class Info {
     def ups = ""
     def downs = ""
@@ -63,8 +71,8 @@ def id = 3
 println """
 UPDATE play_evolutions
 set hash = '${hash}',
-set revert_script = '${info.downs}',
-set apply_script = '${info.ups}'
+revert_script = '${info.downs}',
+apply_script = '${info.ups}'
 where id = ${id};
 """
 
