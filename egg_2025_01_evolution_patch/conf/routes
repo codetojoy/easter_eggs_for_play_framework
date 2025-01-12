@@ -5,6 +5,9 @@
 # Default path will just redirect to the computer list
 GET     /                           controllers.HomeController.index()
 
+GET     /evolutions                 controllers.EvolutionsController.listDefault()
+GET     /evolutions/:evolutionName  controllers.EvolutionsController.list(request: Request, evolutionName: String)
+
 # Computers list (look at the default values for pagination parameters)
 GET     /computers                  controllers.HomeController.list(request: Request, p:Int ?= 0, s ?= "name", o ?= "asc", f ?= "")
 
