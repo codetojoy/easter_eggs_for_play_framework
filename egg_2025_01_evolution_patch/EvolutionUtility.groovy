@@ -9,7 +9,7 @@ import java.security.MessageDigest
 // Usage
 // 1. run the app so that the evolutions are applied
 // 2. halt the app
-// 3. edit 3.sql, e.g. by adding quotes around future keywords (e.g. `system_user`)
+// 3. edit 3.sql with some modifications
 // 4. run `groovy EvolutionUtility.groovy`
 // 5. apply the output SQL to the database
 // 6. run the app and confirm 
@@ -25,20 +25,21 @@ def MODE_UNKNOWNS = -1
 def mode = MODE_UNKNOWNS
 
 // from: https://github.com/playframework/playframework/blob/6c23106bbf39fc723c37c97d0aca683aafd2184b/persistence/play-jdbc-evolutions/src/main/scala/play/api/db/evolutions/EvolutionsApi.scala#L692
+
 def upsMarker   = /^(#|--).*!Ups.*$/
 def downsMarker = /^(#|--).*!Downs.*$/
 
-// from
+// from:
 // (1) https://github.com/playframework/playframework/blob/6c23106bbf39fc723c37c97d0aca683aafd2184b/persistence/play-jdbc-evolutions/src/main/scala/play/api/db/evolutions/Evolutions.scala#L41
 // (2) https://github.com/playframework/playframework/blob/6c23106bbf39fc723c37c97d0aca683aafd2184b/core/play/src/main/scala/play/api/libs/Codecs.scala#L17
 // (3) https://github.com/playframework/playframework/blob/6c23106bbf39fc723c37c97d0aca683aafd2184b/core/play/src/main/scala/play/api/libs/Codecs.scala#L26
+
 def sha1MessageDigest = MessageDigest.getInstance("SHA-1")
 def hexEncoder = BaseEncoding.base16().lowerCase()
 
 def getHash = { info ->
     def s = info.downs.trim() + info.ups.trim()
-    def bytes = s.bytes
-    def preHash = sha1MessageDigest.digest(bytes)
+    def preHash = sha1MessageDigest.digest(s.bytes)
     def hash = hexEncoder.encode(preHash)
     return hash
 }
