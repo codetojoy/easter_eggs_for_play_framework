@@ -1,11 +1,4 @@
 
-### next
-
-- modify banner header
-- home page
-- add evo name
-- add prefix for ups/downs
-
 ### Summary
 
 * a sandbox for experimentation with patching evolutions
