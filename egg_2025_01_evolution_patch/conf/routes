@@ -3,7 +3,8 @@
 # ~~~~
 
 # Default path will just redirect to the computer list
-GET     /                           controllers.HomeController.index()
+# GET     /                           controllers.HomeController.index()
+GET     /                           controllers.EvolutionsController.listDefault()
 
 GET     /evolutions                 controllers.EvolutionsController.listDefault()
 GET     /evolutions/:evolutionName  controllers.EvolutionsController.list(request: Request, evolutionName: String)
