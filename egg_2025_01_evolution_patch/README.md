@@ -2,7 +2,12 @@
 ### Summary
 
 * a sandbox for experimentation with patching evolutions
-* see ~/EvolutionUtility.groovy 
+* item 1
+    * see ~/EvolutionUtility.groovy 
+    * this allows amending of a revision
+* item 2
+    * see EvolutionsController.java
+    * this will log evolution info 
 
 ### Version Info
 
