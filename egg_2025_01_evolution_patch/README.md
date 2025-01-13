@@ -9,6 +9,15 @@
     * see EvolutionsController.java
     * this will log evolution info 
 
+### Usage
+
+* start app and visit http://localhost:9000/evolutions to see default evolutions
+* stop app
+* edit `conf/evolutions/default/3.sql`
+* run `groovy EvolutionUtility.groovy`
+* apply SQL to database
+* start app and visit http://localhost:9000/evolutions to see default evolutions
+
 ### Version Info
 
 ```
