@@ -2,12 +2,28 @@
 import hashlib
 import re
 
-class Processor:
+class Mode:
     def __init__(self):
         self.mode_ups = 1
         self.mode_downs = 2
         self.mode_unknown = 3
         self.mode = self.mode_unknown
+
+    def set_ups(self):
+        self.mode = self.mode_ups
+
+    def set_downs(self):
+        self.mode = self.mode_downs
+
+    def is_ups(self):
+        return self.mode == self.mode_ups
+
+    def is_downs(self):
+        return self.mode == self.mode_downs
+
+class Processor:
+    def __init__(self):
+        self.mode = Mode()
 
         self.ups_str = ""
         self.downs_str = ""
@@ -20,15 +36,15 @@ class Processor:
 
         if (is_ups_marker):
             # enter Ups mode
-            self.mode = self.mode_ups
+            self.mode.set_ups()
         elif (is_downs_marker):
             # enter Downs mode
-            self.mode = self.mode_downs
+            self.mode.set_downs()
         else:
-            if (self.mode == self.mode_ups):
+            if (self.mode.is_ups()):
                 # consume as Ups
                 self.ups_str = self.ups_str + line.strip() + "\n"
-            elif (self.mode == self.mode_downs):
+            elif (self.mode.is_downs()):
                 # consume as Downs
                 self.downs_str = self.downs_str + line.strip() + "\n"
 
