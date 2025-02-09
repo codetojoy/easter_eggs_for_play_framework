@@ -2,7 +2,9 @@
 GET     /                           controllers.SandboxController.index()
 
 GET     /sandbox                    controllers.SandboxController.index()
-POST    /sandbox                    controllers.SandboxController.sandboxReceive(request: Request)
+POST    /sandbox                    controllers.SandboxController.createForm(request: Request)
+
+POST    /signature                  controllers.SandboxController.signature(request: Request)
 
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
 
