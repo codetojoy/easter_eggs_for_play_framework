@@ -1,0 +1,21 @@
+
+@(evolutionName: String, evolutionInfos: List[models.EvolutionInfo])
+
+@main {
+    <h3>Evolution : @evolutionName</h3>
+    <hr/>
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+      @for(evolutionInfo <- evolutionInfos) {
+        <tr>
+          <td>@evolutionInfo.getRevision() .sql</td>
+          <td>@evolutionInfo.getHash()</td>
+          <td><pre>@evolutionInfo.getAbbreviatedSqlUp(40)</pre></td>
+          <td><pre>@evolutionInfo.getAbbreviatedSqlDown(40)</pre></td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+
