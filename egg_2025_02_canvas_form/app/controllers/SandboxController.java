@@ -1,9 +1,14 @@
 package controllers;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.*;
 
 import play.mvc.*;
 import play.libs.*;
+import play.libs.Files.TemporaryFile;
 
 import javax.inject.Inject;
 
@@ -43,10 +48,33 @@ public class SandboxController extends Controller {
     }
 
     public Result signature(Http.Request request) {
-        var formData = request.body().asMultipartFormData();
-        emitLog("TRACER HELLO from signature");
+        boolean ok = false;
 
+        String dataPath = "/Users/measter/src/github/codetojoy/easter_eggs_for_play_framework/egg_2025_02_canvas_form/files";
+        File dataDir = new File(dataPath);
+        if (!dataDir.exists() || !dataDir.isDirectory()) {
+            return internalServerError("data directory not found");
+        }
+
+        Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
+        Http.MultipartFormData.FilePart<TemporaryFile> signature = body.getFile("user-signature");
+
+        if (signature != null) {
+            String fileName = signature.getFilename();
+            long fileSize = signature.getFileSize();
+            String contentType = signature.getContentType();
+            TemporaryFile file = signature.getRef();
+
+            file.copyTo(Paths.get(dataPath + "/" + "signature.png"), true);
+            ok = true;
+        }
+
+        emitLog("TRACER HELLO from signature");
         String message = "{\"status\": \"OK\"}";
+        if (!ok) {
+            message = "{\"status\": \"ERROR\"}";
+        }
+
         return ok(Json.parse(message));
     }
 }
