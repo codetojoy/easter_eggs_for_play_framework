@@ -1,6 +1,40 @@
 
 
 @main {
+
+<script>
+
+$( document ).ready(function() {
+    const canvas = document.getElementById('signature-pad');
+    const context = canvas.getContext('2d');
+    const input = document.getElementById('name');
+    const saveButton = document.getElementById('save');
+    const cancelButton = document.getElementById('clear');
+
+    canvas.height = 200;
+    canvas.width = 400;
+
+    context.font = '48px Dancing Script';
+
+    input.addEventListener('input', function (event) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.strokeText(event.target.value, 100, 100, 200);
+    });
+
+    saveButton.addEventListener('click', function (event) {
+        const data = canvas.toDataURL('image/png');
+        console.log(`TRACER: ${data}`);
+    });
+
+    cancelButton.addEventListener('click', function (event) {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        input.value = '';
+    });
+});
+</script>
+
+
+
 <!-- see main.scala.html for jQuery, Knockout JS, CSS, etc -->
 <h3>Sandbox</h3>
 <p>Hello this is a test form for HTML canvas/context/etc</p>
@@ -8,6 +42,16 @@
 <form action="http://localhost:9000/sandbox" method="POST">
     <input type="text" id="input1" name="input1" value="abc"/>
     <input type="text" id="input2" name="input2" value="def"/>
+
+<div class="wrapper">
+  <canvas id="signature-pad" class="signature-pad" width=400 height=200></canvas>
+</div>
+<div>
+  <input id="sign-text" name="sign-text" type="text" placeholder="type name here" />
+  <button id="save">Save</button>
+  <button id="clear">Clear</button>
+</div>
+
     <button type="submit">Submit</button>
 </form>
 <hr/>

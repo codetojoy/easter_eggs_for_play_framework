@@ -24,8 +24,13 @@ public class SandboxController extends Controller {
     public Result sandboxReceive(Http.Request request) {
         String input1 = request.body().asFormUrlEncoded().get("input1")[0];
         emitLog("input1: " + input1);
+
         String input2 = request.body().asFormUrlEncoded().get("input2")[0];
         emitLog("input2: " + input2);
+
+        String signText = request.body().asFormUrlEncoded().get("sign-text")[0];
+        emitLog("sign-text: " + signText);
+
         return ok(views.html.sandboxReceive.render());
     }
 }
