@@ -6,3 +6,8 @@
 * key controller and views: Sandbox
 * creates `./tmp_files` and writes to that folder
 
+### References
+
+* see [this thread](https://stackoverflow.com/questions/23511792)
+* see canvas, context, toBlob() on Mozilla
+
