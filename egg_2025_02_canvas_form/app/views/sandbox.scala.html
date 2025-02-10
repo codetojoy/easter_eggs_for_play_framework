@@ -23,8 +23,6 @@ $( document ).ready(function() {
     });
 
     signButton.addEventListener('click', function (event) {
-        // const data = canvas.toDataURL('image/png');
-        // const blob = canvas.toBlob();
 
         canvas.toBlob((blob) => {
             const formData = new FormData();
@@ -38,21 +36,6 @@ $( document ).ready(function() {
                 const id = json.id;
                 console.log(`TRACER signature-id is: ${id}`);
             });
-            /*
-            const formData = new FormData();
-            formData.append('file', blob, 'signature.png');
-            formData.append('input1', document.getElementById('input1').value);
-            formData.append('input2', document.getElementById('input2').value);
-            formData.append('sign-text', document.getElementById('sign-text').value);
-            formData.append('my-file', myFile.files[0]);
-
-            fetch('http://localhost:9000/sandbox', {
-                method: 'POST',
-                body: formData
-            }).then((response) => {
-                console.log(response);
-            });
-            */
         });
 
         console.log(`TRACER: sign`);
@@ -68,8 +51,6 @@ $( document ).ready(function() {
 });
 </script>
 
-
-
 <!-- see main.scala.html for jQuery, Knockout JS, CSS, etc -->
 <h3>Sandbox</h3>
 <p>Hello this is a test form for HTML canvas/context/etc</p>
@@ -77,16 +58,18 @@ $( document ).ready(function() {
 <form action="http://localhost:9000/sandbox" method="POST">
     <input type="text" id="input1" name="input1" value="abc"/>
     <input type="text" id="input2" name="input2" value="def"/>
-    <input type="file" id="my-file" name="my-file" />
+    <input type="text" id="signature-id" name="signature-id" hidden />
 
-<div class="wrapper">
-  <canvas id="signature-pad" class="signature-pad" width=400 height=200></canvas>
-</div>
-<div>
-  <input id="sign-text" name="sign-text" type="text" placeholder="type name here" />
-  <button id="sign">Sign</button>
-  <button id="clear">Clear</button>
-</div>
+    <!-- signature begin -->
+    <div class="wrapper">
+        <canvas id="signature-pad" class="signature-pad" width=400 height=200></canvas>
+    </div>
+    <div>
+        <input id="sign-text" name="sign-text" type="text" placeholder="type name here" />
+        <button id="sign">Sign</button>
+        <button id="clear">Clear</button>
+    </div>
+    <!-- signature end -->
 
     <button type="submit">Submit</button>
 </form>

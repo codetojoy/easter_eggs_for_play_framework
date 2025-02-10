@@ -31,9 +31,7 @@ public class SandboxController extends Controller {
 
     public Result createForm(Http.Request request) {
         var formData = request.body().asMultipartFormData();
-        emitLog("TRACER HELLO");
 
-        /*
         String input1 = request.body().asFormUrlEncoded().get("input1")[0];
         emitLog("input1: " + input1);
 
@@ -43,9 +41,15 @@ public class SandboxController extends Controller {
         String signText = request.body().asFormUrlEncoded().get("sign-text")[0];
         emitLog("sign-text: " + signText);
 
-        String[] filenameArr = request.body().asFormUrlEncoded().get("filename");
-        emitLog("filenameArr: " + filenameArr);
-*/
+        String signatureId = "unknown";
+
+        var fieldArrForSig = request.body().asFormUrlEncoded().get("signature-id");
+        if (fieldArrForSig != null && fieldArrForSig.length > 0) {
+            signatureId = request.body().asFormUrlEncoded().get("signature-id")[0];
+        }
+
+        emitLog("signature-id: " + signatureId);
+
         return ok(views.html.sandboxReceive.render());
     }
 
