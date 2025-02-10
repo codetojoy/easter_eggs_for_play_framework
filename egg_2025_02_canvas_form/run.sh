@@ -1,6 +1,6 @@
 #!/bin/bash
 
-export PLAY_EVOLUTIONS_META_TABLE="play_evolutions_2025_01"
+mkdir -p tmp_files
 
 sbt run 
 

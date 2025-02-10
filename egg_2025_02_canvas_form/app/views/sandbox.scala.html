@@ -33,8 +33,10 @@ $( document ).ready(function() {
             fetch('http://localhost:9000/signature', {
                 method: 'POST',
                 body: formData
-            }).then((response) => {
-                console.log(response);
+            }).then(response => response.json())
+            .then((json) => {
+                const id = json.id;
+                console.log(`TRACER signature-id is: ${id}`);
             });
             /*
             const formData = new FormData();

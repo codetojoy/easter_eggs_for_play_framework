@@ -12,6 +12,8 @@ import play.libs.Files.TemporaryFile;
 
 import javax.inject.Inject;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
+
 public class SandboxController extends Controller {
 
     @Inject
@@ -50,7 +52,10 @@ public class SandboxController extends Controller {
     public Result signature(Http.Request request) {
         boolean ok = false;
 
-        String dataPath = "/Users/measter/src/github/codetojoy/easter_eggs_for_play_framework/egg_2025_02_canvas_form/files";
+        File tmpFile = new File(".");
+        String tmpPath = tmpFile.getAbsolutePath();
+
+        String dataPath = tmpPath + "/tmp_files";
         File dataDir = new File(dataPath);
         if (!dataDir.exists() || !dataDir.isDirectory()) {
             return internalServerError("data directory not found");
@@ -58,6 +63,7 @@ public class SandboxController extends Controller {
 
         Http.MultipartFormData<TemporaryFile> body = request.body().asMultipartFormData();
         Http.MultipartFormData.FilePart<TemporaryFile> signature = body.getFile("user-signature");
+        String signatureId = "";
 
         if (signature != null) {
             String fileName = signature.getFilename();
@@ -65,17 +71,20 @@ public class SandboxController extends Controller {
             String contentType = signature.getContentType();
             TemporaryFile file = signature.getRef();
 
+            signatureId = UUID.randomUUID().toString();
             file.copyTo(Paths.get(dataPath + "/" + "signature.png"), true);
             ok = true;
         }
 
-        emitLog("TRACER HELLO from signature");
-        String message = "{\"status\": \"OK\"}";
-        if (!ok) {
-            message = "{\"status\": \"ERROR\"}";
-        }
+        emitLog("TRACER signature POST OK with id: " + signatureId);
 
-        return ok(Json.parse(message));
+        if (ok) {
+            ObjectNode node = Json.newObject();
+            node.put("id", signatureId);
+            return ok(node);
+        } else {
+            return internalServerError("internal error");
+        }
     }
 }
 
