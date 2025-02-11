@@ -26,8 +26,7 @@ $( document ).ready(function() {
         canvas.toBlob((blob) => {
 	        let fileInputElement = document.getElementById('user-signature');
             let container = new DataTransfer();
-  	        let data = blob;
-            let file = new File([data], "signature.png",{type:"image/png", lastModified:new Date().getTime()});
+            const file = new File([blob], "signature.png",{type:"image/png", lastModified:new Date().getTime()});
             container.items.add(file);
             fileInputElement.files = container.files;
             console.log(`TRACER: ok blob`);
@@ -53,7 +52,7 @@ $( document ).ready(function() {
 <form action="http://localhost:9000/sandbox-b" method="POST" enctype="multipart/form-data">
     <input type="text" id="input1" name="input1" value="abc"/>
     <input type="text" id="input2" name="input2" value="def"/>
-    <input type="file" id="user-signature" name="user-signature" />
+    <input type="file" id="user-signature" name="user-signature" hidden />
 
     <!-- signature begin -->
     <div class="wrapper">
