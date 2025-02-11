@@ -4,6 +4,9 @@ GET     /                           controllers.SandboxController.index()
 GET     /sandbox                    controllers.SandboxController.index()
 POST    /sandbox                    controllers.SandboxController.createForm(request: Request)
 
+GET     /sandbox-b                  controllers.SandboxBController.index()
+POST    /sandbox-b                  controllers.SandboxBController.createForm(request: Request)
+
 POST    /signature                  controllers.SandboxController.signature(request: Request)
 
 GET     /assets/*file               controllers.Assets.at(path="/public", file)
