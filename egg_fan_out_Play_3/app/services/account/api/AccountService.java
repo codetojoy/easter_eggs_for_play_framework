@@ -1,5 +1,5 @@
 
-package services.account.v4;
+package services.account.api;
 
 import org.slf4j.*;
 
@@ -20,14 +20,14 @@ import models.Account;
 import utils.*;
 import services.AccountApiExecutionContext;
 
-public class Account_V4_Service {
+public class AccountService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final WSClient wc;
     private final AccountApiExecutionContext ec;
 
     @Inject
-    public Account_V4_Service(WSClient wc, AccountApiExecutionContext ec) {
+    public AccountService(WSClient wc, AccountApiExecutionContext ec) {
         this.wc = wc;
         this.ec = ec;
     }
@@ -41,7 +41,7 @@ public class Account_V4_Service {
         return targetURL;
     }
 
-    public List<Account> fetchInfoForAccounts_V4(List<Account> accounts) throws Exception {
+    public List<Account> fetchInfoForAccounts(List<Account> accounts) throws Exception {
         final List<CompletableFuture<Collection<Account>>> futures =
             accounts.stream().map(this::buildApiCall).toList();
 
