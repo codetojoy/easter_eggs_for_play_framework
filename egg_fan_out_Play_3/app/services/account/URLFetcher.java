@@ -59,7 +59,7 @@ class URLFetcher {
             ObjectMapper objectMapper = new ObjectMapper();
             result = objectMapper.readValue(response.body(), Account.class);
 
-            result.setThreadId(Thread.currentThread().getId());
+            result.setThreadId(Thread.currentThread().threadId());
             result.setElapsed(timer.getElapsed(""));
             MyLogger.log("URLFetcher OK");
         } catch (Exception ex) {

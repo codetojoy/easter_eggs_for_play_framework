@@ -64,7 +64,7 @@ public class Account_V4_Service {
     }
 
     protected Collection<Account> processApiResponse(WSResponse response, utils.Timer timer) {
-        Optional<Account> accountResponse = Optional.empty();
+        Collection<Account> results = new ArrayList<>();
 
         try {
             String responseBody = response.getBody();
@@ -76,15 +76,9 @@ public class Account_V4_Service {
             receivedAccount.setThreadId(Thread.currentThread().threadId());
             receivedAccount.setElapsed(timer.getElapsed(""));
 
-            accountResponse = Optional.of(receivedAccount);
+            results.add(receivedAccount);
         } catch (Exception ex) {
             MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
-        }
-
-        Collection<Account> results = List.of();
-
-        if (accountResponse.isPresent()) {
-            results = List.of(accountResponse.get());
         }
 
         return results;
