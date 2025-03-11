@@ -5,8 +5,6 @@ import org.slf4j.*;
 
 import java.util.*;
 import java.util.concurrent.*;
-import static java.util.Collections.emptyList;
-import static java.util.stream.Collectors.toList;
 
 import javax.inject.Inject;
 
@@ -45,11 +43,11 @@ public class Account_V4_Service {
 
     public List<Account> fetchInfoForAccounts_V4(List<Account> accounts) throws Exception {
         final List<CompletableFuture<Collection<Account>>> futures =
-            accounts.stream().map(acc -> buildApiCall(acc)).toList();
+            accounts.stream().map(this::buildApiCall).toList();
 
         CompletableFuture<Collection<Account>> aggregateFuture = futures.stream()
-                                                                            .reduce(combineApiCalls())
-                                                                            .orElse(CompletableFuture.completedFuture(emptyList()));
+                                                                        .reduce(combineApiCalls())
+                                                                        .orElse(CompletableFuture.completedFuture(List.of()));
 
         Collection<Account> receivedAccountsCollection = aggregateFuture.get();
         List<Account> receivedAccounts = receivedAccountsCollection.stream().toList();
