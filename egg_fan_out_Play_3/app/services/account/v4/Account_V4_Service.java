@@ -45,14 +45,14 @@ public class Account_V4_Service {
 
     public List<Account> fetchInfoForAccounts_V4(List<Account> accounts) throws Exception {
         final List<CompletableFuture<Collection<Optional<Account>>>> futures =
-            accounts.stream().map(acc -> buildApiCall(acc)).collect(toList());
+            accounts.stream().map(acc -> buildApiCall(acc)).toList();
 
         CompletableFuture<Collection<Optional<Account>>> aggregateFuture = futures.stream()
                                                                             .reduce(combineApiCalls())
                                                                             .orElse(CompletableFuture.completedFuture(emptyList()));
 
         Collection<Optional<Account>> receivedAccountsCollection = aggregateFuture.get();
-        List<Account> receivedAccounts = receivedAccountsCollection.stream().filter(optionalAcc -> optionalAcc.isPresent()).map(optionalAcc -> optionalAcc.get()).collect(toList());
+        List<Account> receivedAccounts = receivedAccountsCollection.stream().filter(optionalAcc -> optionalAcc.isPresent()).map(optionalAcc -> optionalAcc.get()).toList();
         return receivedAccounts;
     }
 
@@ -73,7 +73,7 @@ public class Account_V4_Service {
 
             MyLogger.log(logger, "wc received response. acc: " + receivedAccount.toString());
 
-            receivedAccount.setThreadId(Thread.currentThread().getId());
+            receivedAccount.setThreadId(Thread.currentThread().threadId());
             receivedAccount.setElapsed(timer.getElapsed(""));
 
             accountResponse = Optional.of(receivedAccount);
@@ -91,7 +91,7 @@ public class Account_V4_Service {
     protected BinaryOperator<CompletableFuture<Collection<Optional<Account>>>> combineApiCalls() {
         return (cf1, cf2) -> cf1
                 .thenCombine(cf2, (accounts1, accounts2) -> {
-                    return Stream.concat(accounts1.stream(), accounts2.stream()).collect(toList());
+                    return Stream.concat(accounts1.stream(), accounts2.stream()).toList();
                 });
     }
 }
