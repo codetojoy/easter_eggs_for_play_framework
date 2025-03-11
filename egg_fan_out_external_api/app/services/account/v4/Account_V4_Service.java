@@ -45,33 +45,7 @@ public class Account_V4_Service {
 
     public List<Account> fetchInfoForAccounts_V4(List<Account> accounts) throws Exception {
         final List<CompletableFuture<Collection<Optional<Account>>>> futures =
-            accounts.stream().map(account -> {
-                String targetURL = buildURL(account);
-                utils.Timer timer = new utils.Timer();
-
-                return wc.url(targetURL).get().thenApplyAsync(response -> {
-                    Optional<Account> accountResponse = Optional.empty();
-
-                    try {
-                        String responseBody = response.getBody();
-                        ObjectMapper objectMapper = new ObjectMapper();
-                        Account receivedAccount = objectMapper.readValue(responseBody, Account.class);
-
-                        MyLogger.log(logger, "wc received response. acc: " + receivedAccount.toString());
-
-                        receivedAccount.setThreadId(Thread.currentThread().getId());
-                        receivedAccount.setElapsed(timer.getElapsed(""));
-
-                        accountResponse = Optional.of(receivedAccount);
-                    } catch (Exception ex) {
-                        MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
-                    }
-
-                    Collection<Optional<Account>> accountResponses = List.of(accountResponse);
-
-                    return accountResponses;
-                }, ec).toCompletableFuture();
-            }).collect(toList());
+            accounts.stream().map(acc -> buildApiCall(acc)).collect(toList());
 
         CompletableFuture<Collection<Optional<Account>>> aggregateFuture = futures.stream()
                                                                             .reduce(combineApiCalls())
@@ -80,6 +54,34 @@ public class Account_V4_Service {
         Collection<Optional<Account>> receivedAccountsCollection = aggregateFuture.get();
         List<Account> receivedAccounts = receivedAccountsCollection.stream().filter(optionalAcc -> optionalAcc.isPresent()).map(optionalAcc -> optionalAcc.get()).collect(toList());
         return receivedAccounts;
+    }
+
+    protected CompletableFuture<Collection<Optional<Account>>> buildApiCall(Account account) {
+        String targetURL = buildURL(account);
+        utils.Timer timer = new utils.Timer();
+
+        return wc.url(targetURL).get().thenApplyAsync(response -> {
+            Optional<Account> accountResponse = Optional.empty();
+
+            try {
+                String responseBody = response.getBody();
+                ObjectMapper objectMapper = new ObjectMapper();
+                Account receivedAccount = objectMapper.readValue(responseBody, Account.class);
+
+                MyLogger.log(logger, "wc received response. acc: " + receivedAccount.toString());
+
+                receivedAccount.setThreadId(Thread.currentThread().getId());
+                receivedAccount.setElapsed(timer.getElapsed(""));
+
+                accountResponse = Optional.of(receivedAccount);
+            } catch (Exception ex) {
+                MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
+            }
+
+            Collection<Optional<Account>> accountResponses = List.of(accountResponse);
+
+            return accountResponses;
+        }, ec).toCompletableFuture();
     }
 
     // https://theboreddev.com/parallel-api-calls-with-completablefuture/
