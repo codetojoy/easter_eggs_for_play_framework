@@ -1,0 +1,5 @@
+# Home page
+GET     /                           controllers.WidgetController.index
+
+GET     /accounts_v4                controllers.AccountController.getAccounts_V4(request: Request)
+
