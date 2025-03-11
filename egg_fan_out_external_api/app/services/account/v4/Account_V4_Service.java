@@ -60,28 +60,30 @@ public class Account_V4_Service {
         String targetURL = buildURL(account);
         utils.Timer timer = new utils.Timer();
 
-        return wc.url(targetURL).get().thenApplyAsync(response -> {
-            Optional<Account> accountResponse = Optional.empty();
+        return wc.url(targetURL).get().thenApplyAsync(response -> processApiResponse(response, timer), ec).toCompletableFuture();
+    }
 
-            try {
-                String responseBody = response.getBody();
-                ObjectMapper objectMapper = new ObjectMapper();
-                Account receivedAccount = objectMapper.readValue(responseBody, Account.class);
+    protected Collection<Optional<Account>> processApiResponse(WSResponse response, utils.Timer timer) {
+        Optional<Account> accountResponse = Optional.empty();
 
-                MyLogger.log(logger, "wc received response. acc: " + receivedAccount.toString());
+        try {
+            String responseBody = response.getBody();
+            ObjectMapper objectMapper = new ObjectMapper();
+            Account receivedAccount = objectMapper.readValue(responseBody, Account.class);
 
-                receivedAccount.setThreadId(Thread.currentThread().getId());
-                receivedAccount.setElapsed(timer.getElapsed(""));
+            MyLogger.log(logger, "wc received response. acc: " + receivedAccount.toString());
 
-                accountResponse = Optional.of(receivedAccount);
-            } catch (Exception ex) {
-                MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
-            }
+            receivedAccount.setThreadId(Thread.currentThread().getId());
+            receivedAccount.setElapsed(timer.getElapsed(""));
 
-            Collection<Optional<Account>> accountResponses = List.of(accountResponse);
+            accountResponse = Optional.of(receivedAccount);
+        } catch (Exception ex) {
+            MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
+        }
 
-            return accountResponses;
-        }, ec).toCompletableFuture();
+        Collection<Optional<Account>> accountResponses = List.of(accountResponse);
+
+        return accountResponses;
     }
 
     // https://theboreddev.com/parallel-api-calls-with-completablefuture/
