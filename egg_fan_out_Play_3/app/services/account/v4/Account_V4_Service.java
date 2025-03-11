@@ -44,26 +44,26 @@ public class Account_V4_Service {
     }
 
     public List<Account> fetchInfoForAccounts_V4(List<Account> accounts) throws Exception {
-        final List<CompletableFuture<Collection<Optional<Account>>>> futures =
+        final List<CompletableFuture<Collection<Account>>> futures =
             accounts.stream().map(acc -> buildApiCall(acc)).toList();
 
-        CompletableFuture<Collection<Optional<Account>>> aggregateFuture = futures.stream()
+        CompletableFuture<Collection<Account>> aggregateFuture = futures.stream()
                                                                             .reduce(combineApiCalls())
                                                                             .orElse(CompletableFuture.completedFuture(emptyList()));
 
-        Collection<Optional<Account>> receivedAccountsCollection = aggregateFuture.get();
-        List<Account> receivedAccounts = receivedAccountsCollection.stream().filter(optionalAcc -> optionalAcc.isPresent()).map(optionalAcc -> optionalAcc.get()).toList();
+        Collection<Account> receivedAccountsCollection = aggregateFuture.get();
+        List<Account> receivedAccounts = receivedAccountsCollection.stream().toList();
         return receivedAccounts;
     }
 
-    protected CompletableFuture<Collection<Optional<Account>>> buildApiCall(Account account) {
+    protected CompletableFuture<Collection<Account>> buildApiCall(Account account) {
         String targetURL = buildURL(account);
         utils.Timer timer = new utils.Timer();
 
         return wc.url(targetURL).get().thenApplyAsync(response -> processApiResponse(response, timer), ec).toCompletableFuture();
     }
 
-    protected Collection<Optional<Account>> processApiResponse(WSResponse response, utils.Timer timer) {
+    protected Collection<Account> processApiResponse(WSResponse response, utils.Timer timer) {
         Optional<Account> accountResponse = Optional.empty();
 
         try {
@@ -81,14 +81,18 @@ public class Account_V4_Service {
             MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
         }
 
-        Collection<Optional<Account>> accountResponses = List.of(accountResponse);
+        Collection<Account> results = List.of();
 
-        return accountResponses;
+        if (accountResponse.isPresent()) {
+            results = List.of(accountResponse.get());
+        }
+
+        return results;
     }
 
     // https://theboreddev.com/parallel-api-calls-with-completablefuture/
 
-    protected BinaryOperator<CompletableFuture<Collection<Optional<Account>>>> combineApiCalls() {
+    protected BinaryOperator<CompletableFuture<Collection<Account>>> combineApiCalls() {
         return (cf1, cf2) -> cf1
                 .thenCombine(cf2, (accounts1, accounts2) -> {
                     return Stream.concat(accounts1.stream(), accounts2.stream()).toList();
