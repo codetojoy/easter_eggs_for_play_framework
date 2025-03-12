@@ -46,12 +46,12 @@ public class AccountController extends Controller {
         return accounts;
     }
 
-    public Result getAccounts_V4(Http.Request request) throws Exception {
+    public Result getAccounts(Http.Request request) throws Exception {
         var accounts = genAccounts();
 
         var timer = new utils.Timer();
         List<Account> receivedAccounts = accountService.fetchInfoForAccounts(accounts);
-        String timeMessage = timer.getElapsed("V4 overall request time");
+        String timeMessage = timer.getElapsed("overall request time");
         MyLogger.log(logger, timeMessage);
 
         for (Account account : receivedAccounts) {

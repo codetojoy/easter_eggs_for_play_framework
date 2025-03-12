@@ -13,9 +13,9 @@ import javax.inject.Singleton;
  * https://playframework.com/documentation/latest/JavaForms
  */
 @Singleton
-public class WidgetController extends Controller {
+public class HomeController extends Controller {
     @Inject
-    public WidgetController() {
+    public HomeController() {
     }
 
     public Result index() {
