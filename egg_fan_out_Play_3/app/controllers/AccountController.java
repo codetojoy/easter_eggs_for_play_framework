@@ -22,17 +22,12 @@ import services.account.api.AccountService;
 public class AccountController extends Controller {
     private final Logger logger = LoggerFactory.getLogger(getClass()) ;
 
-    private final HttpExecutionContext ec;
-    private final WSClient ws;
-
     private final AccountService accountService;
 
     private final static int NUM_ACCOUNTS = 100;
 
     @Inject
-    public AccountController(HttpExecutionContext ec, WSClient ws, AccountService accountService) {
-        this.ec = ec;
-        this.ws = ws;
+    public AccountController(AccountService accountService) {
         this.accountService = accountService;
     }
 
