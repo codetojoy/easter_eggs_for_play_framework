@@ -1,4 +1,4 @@
-name := """play-java-forms-example"""
+name := """api-fan-out"""
 
 version := "1.0-SNAPSHOT"
 
