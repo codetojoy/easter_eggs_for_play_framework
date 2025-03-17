@@ -1,0 +1,5 @@
+# Home page
+GET     /                           controllers.HomeController.index
+
+GET     /accounts                   controllers.AccountController.getAccounts(request: Request)
+
