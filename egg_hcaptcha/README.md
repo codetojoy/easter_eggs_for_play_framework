@@ -5,6 +5,8 @@
 
 ### usage
 
+* recommend: JDK `11.0.26-amzn` via SDKMan!
+* `. ./test_setvars.sh`
 * `./run.sh`
 * visit http://localhost:9000
 
