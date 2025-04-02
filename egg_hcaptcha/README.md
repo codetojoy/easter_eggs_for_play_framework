@@ -1,7 +1,6 @@
-### egg_routes
+### Summary
 
-* partition `routes` into other files such as `player.routes` and `widgets.routes`
-* models are silly: `Player`, `Foo`, `Bar` with no database
+* working demo for [hCaptcha](https://www.hcaptcha.com/)
 
 ### usage
 
@@ -10,5 +9,10 @@
 * `. ./test_setvars.sh`
 * `./run.sh`
 * visit http://localhost:9000
+
+### key files
+
+* front-end: `app/views/login.scala.html`
+* back-end: `app/controllers/AuthController.authenticate()`
 
 
