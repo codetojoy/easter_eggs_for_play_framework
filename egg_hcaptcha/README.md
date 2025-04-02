@@ -6,6 +6,7 @@
 ### usage
 
 * recommend: JDK `11.0.26-amzn` via SDKMan!
+	* e.g. `sdk env init`
 * `. ./test_setvars.sh`
 * `./run.sh`
 * visit http://localhost:9000
