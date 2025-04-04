@@ -17,6 +17,8 @@ import com.fasterxml.jackson.core.*;
 import com.fasterxml.jackson.databind.*;
 import com.fasterxml.jackson.databind.node.*;
 
+import java.util.*;
+
 @Singleton
 public class AuthController extends Controller {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -46,16 +48,23 @@ public class AuthController extends Controller {
         return ok(views.html.login.render(message, hcaptchaSiteKey));
     }
 
-    private String getToken(Http.Request request, String fieldName) {
-        String token = "";
+    private Optional<String> getToken(Http.Request request, String fieldName) {
+        Optional<String> result = Optional.empty();
         String[] fields = request.body().asFormUrlEncoded().get(fieldName);
         if (fields != null && fields.length > 0) {
-           token = fields[0]; 
+           result = Optional.of(fields[0]); 
         }
-        return token;
+        return result;
     }
 
-    private String callSiteVerify(String token) throws Exception {
+    private Optional<String> callSiteVerify(Optional<String> maybeToken) throws Exception {
+
+        // guard:
+        if (maybeToken.isEmpty()) {
+            return Optional.empty();
+        }
+
+        String token = maybeToken.get();
 
         String paramsFormat = "secret=%s&response=%s";
         String params = String.format(paramsFormat, hcaptchaSecret, token);
@@ -64,24 +73,22 @@ public class AuthController extends Controller {
         WSResponse response = wsClient.url(SITE_VERIFY_URL)
                                       .setContentType("application/x-www-form-urlencoded")
                                       .post(params).toCompletableFuture().get();
-        return response.asJson().toString();
+        return Optional.of(response.asJson().toString());
     }
 
     public Result authenticate(Http.Request request) throws Exception {
-        boolean isOk = false;
 
-        String token = getToken(request, H_CAPTCHA_RESPONSE);
+        Optional<String> maybeToken = getToken(request, H_CAPTCHA_RESPONSE);
 
-        String message = "";
-        if (!token.isEmpty()) {
-            message = callSiteVerify(token);    
-            isOk = true;
-        }
+        Optional<String> maybeMessage = callSiteVerify(maybeToken);
+
+        boolean isOk = maybeMessage.isPresent();
 
         if (isOk) {
+            String message = maybeMessage.get();
             return ok(views.html.landing.render(message));
         } else {
-            return ok(views.html.denied.render(message));
+            return ok(views.html.denied.render(""));
         }
     }
 }
