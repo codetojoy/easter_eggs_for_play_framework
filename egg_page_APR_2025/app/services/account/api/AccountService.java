@@ -28,7 +28,7 @@ public class AccountService {
     public List<Account> fetchAccounts() throws Exception {
         List<Account> accounts = new ArrayList<>();
 
-        var pageSupplier = new SimplePageSupplier(10, wc, ec);
+        var pageSupplier = new ConcurrentPageSupplier(10, wc, ec);
         
         boolean isDone = false;
 

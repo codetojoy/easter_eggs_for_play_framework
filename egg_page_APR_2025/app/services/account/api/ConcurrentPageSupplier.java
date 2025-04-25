@@ -20,7 +20,7 @@ import models.Account;
 import utils.*;
 import services.AccountApiExecutionContext;
 
-public class SimplePageSupplier implements PageSupplier<Account> {
+public class ConcurrentPageSupplier implements PageSupplier<Account> {
     private PageInfo pageInfo;
 
     private final int pageSize;
@@ -29,7 +29,7 @@ public class SimplePageSupplier implements PageSupplier<Account> {
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public SimplePageSupplier(int pageSize, WSClient wc, AccountApiExecutionContext ec) {
+    public ConcurrentPageSupplier(int pageSize, WSClient wc, AccountApiExecutionContext ec) {
         this.pageSize = pageSize;
         this.wc = wc;
         this.ec = ec;
