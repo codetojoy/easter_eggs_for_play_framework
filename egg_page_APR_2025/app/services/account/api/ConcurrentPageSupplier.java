@@ -27,6 +27,9 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
     private final WSClient wc;
     private final AccountApiExecutionContext ec;
     
+    private boolean isFetchDone = false;
+    private final ConcurrentLinkedQueue<Page<Account>> queue = new ConcurrentLinkedQueue<>();
+    
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     public ConcurrentPageSupplier(int pageSize, WSClient wc, AccountApiExecutionContext ec) {
@@ -38,18 +41,37 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
     }
 
     public Page<Account> nextPage() throws Exception {
-        String targetURL = buildURL(pageInfo);
-        System.out.println("targetURL: " + targetURL);
-        utils.Timer timer = new utils.Timer();
+        if (!isFetchDone) {
+            addToQueue();
+            isFetchDone = true;
+        }
+        return queue.poll();
+    }
 
-        WSResponse response = wc.url(targetURL).get().toCompletableFuture().get();
-        List<Account> accounts = processApiResponse(response, timer);
+    // TODO: on another thread
+    protected void addToQueue() throws Exception {
+        boolean isDone = false;
 
-        MyLogger.log(logger, "wc received response. acc: " + accounts.toString());
+        while (!isDone) {
+            String targetURL = buildURL(pageInfo);
+            System.out.println("targetURL: " + targetURL);
+            utils.Timer timer = new utils.Timer();
 
-        this.pageInfo = nextPageInfo();
+            WSResponse response = wc.url(targetURL).get().toCompletableFuture().get();
+            List<Account> accounts = processApiResponse(response, timer);
 
-        return new Page<Account>(accounts);
+            MyLogger.log(logger, "wc received response. acc: " + accounts.toString());
+
+            Page<Account> page = new Page<>(accounts);
+            queue.add(page);
+
+            if (page.isPoisonPill()) {
+                isDone = true;
+                break;
+            }
+
+            this.pageInfo = nextPageInfo();
+        }
     }
 
     protected PageInfo nextPageInfo() {
