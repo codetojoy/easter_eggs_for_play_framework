@@ -92,8 +92,8 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
         int pageNum = pageInfo.pageNum;
         int pageSize = pageInfo.pageSize;   
         int maxSize = 50;
-        String delayInSeconds = "" + (int)(Math.random() * 3);
-        String targetURL = String.format(Constants.ACCOUNT_URL_FORMAT, pageNum, pageSize, maxSize);
+        int delayInSeconds = (int)(Math.random() * 3);
+        String targetURL = String.format(Constants.ACCOUNT_URL_FORMAT, pageNum, pageSize, maxSize, delayInSeconds);
         return targetURL;
     }
 
