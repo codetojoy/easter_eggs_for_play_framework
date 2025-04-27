@@ -28,7 +28,7 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
     private final WSClient wc;
     private final AccountApiExecutionContext execContext;
     
-    private final AtomicBoolean isFetchUnderway = new AtomicBoolean(false);
+    private final AtomicBoolean isFetchStarted = new AtomicBoolean(false);
     private final ConcurrentLinkedQueue<Page<Account>> queue = new ConcurrentLinkedQueue<>();
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -42,7 +42,7 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
     }
 
     public Page<Account> nextPage() throws Exception {
-        if (!isFetchUnderway.get()) {
+        if (!isFetchStarted.get()) {
             CompletableFuture.runAsync(() -> {
                 try { 
                     addToQueue();
@@ -52,12 +52,27 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
             }, execContext);
         }
 
-        return queue.poll();
+        boolean isFound = false;
+        Page<Account> page = null;
+
+        while (!isFound) {
+            page = queue.poll();
+            isFound = (page != null);
+
+            if (!isFound) {
+                // never return null, so we sleep as background thread
+                // must be running behind
+                Thread.sleep(1000);
+                continue;
+            }
+        }
+
+        return page;
     }
 
     // executes on background thread 
     protected void addToQueue() throws Exception {
-        isFetchUnderway.set(true);
+        isFetchStarted.set(true);
 
         boolean isDone = false;
 
@@ -76,6 +91,7 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
 
             if (page.isPoisonPill()) {
                 isDone = true;
+                MyLogger.log("ALL fetches done!");
                 break;
             }
 

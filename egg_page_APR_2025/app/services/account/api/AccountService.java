@@ -35,23 +35,21 @@ public class AccountService {
         while (!isDone) {
             Page<Account> page = pageSupplier.nextPage();
 
-            if (page == null) {
-                // this should never be null, so we sleep as the producer
-                // must be running behind
-                // TODO: clean this up
-                Thread.sleep(1000);
-                continue;
-            }
-
             if (page.isPoisonPill()) {
                 isDone = true;
                 break;
             } 
             
-            List<Account> records = page.getRecords();
-            accounts.addAll(records);
+            doSimulateWork();
+            
+            accounts.addAll(page.getRecords());
         }
 
         return accounts;
+    }
+
+    private void doSimulateWork() throws InterruptedException {
+        long delayInMillis = 2000L;
+        Thread.sleep(java.time.Duration.ofMillis(delayInMillis));
     }
 }
