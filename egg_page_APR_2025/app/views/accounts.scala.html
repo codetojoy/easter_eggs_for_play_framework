@@ -1,9 +1,9 @@
 
-@(accounts: List[models.Account], timeMessage: String)
+@(accounts: List[models.Account], timeMessage: String, threadId: String)
 
 @main("Accounts") {
 
-    <p>message: @timeMessage</p>
+    <p>message: @timeMessage, threadId: @threadId</p>
     <hr/>
     <table>
         <thead>

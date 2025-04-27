@@ -28,12 +28,20 @@ public class AccountService {
     public List<Account> fetchAccounts() throws Exception {
         List<Account> accounts = new ArrayList<>();
 
-        var pageSupplier = new ConcurrentPageSupplier(10, wc, ec);
+        PageSupplier<Account> pageSupplier = new ConcurrentPageSupplier(10, wc, ec);
         
         boolean isDone = false;
 
         while (!isDone) {
             Page<Account> page = pageSupplier.nextPage();
+
+            if (page == null) {
+                // this should never be null, so we sleep as the producer
+                // must be running behind
+                // TODO: clean this up
+                Thread.sleep(1000);
+                continue;
+            }
 
             if (page.isPoisonPill()) {
                 isDone = true;

@@ -45,6 +45,7 @@ public class AccountController extends Controller {
             MyLogger.log(logger, "App received account: " + account.toString());
         } 
 
-        return ok(views.html.accounts.render(receivedAccounts, timeMessage));
+        String threadId = String.valueOf(Thread.currentThread().threadId());
+        return ok(views.html.accounts.render(receivedAccounts, timeMessage, threadId));
     }
 }

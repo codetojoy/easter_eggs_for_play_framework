@@ -3,6 +3,10 @@
 
 * requires a mock API server on 8080, such as [this one](https://github.com/codetojoy/simple-server-java)
 * run this project and go to http://localhost:9000
+* introduces `PageSupplier`
+    * `SimplePageSupplier` is synchronous
+    * `ConcurrentPageSupplier` writes to a queue
+        * TODO: something is wrong when we introduce delay 
 
 ### Version
 

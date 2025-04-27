@@ -5,6 +5,7 @@ import java.util.*;
 import org.slf4j.*;
 
 import java.util.concurrent.*;
+import java.util.concurrent.atomic.AtomicBoolean;
 
 import javax.inject.Inject;
 
@@ -25,30 +26,36 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
 
     private final int pageSize;
     private final WSClient wc;
-    private final AccountApiExecutionContext ec;
+    private final AccountApiExecutionContext execContext;
     
-    private boolean isFetchDone = false;
+    private final AtomicBoolean isFetchDone = new AtomicBoolean(false);
     private final ConcurrentLinkedQueue<Page<Account>> queue = new ConcurrentLinkedQueue<>();
     
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    public ConcurrentPageSupplier(int pageSize, WSClient wc, AccountApiExecutionContext ec) {
+    public ConcurrentPageSupplier(int pageSize, WSClient wc, AccountApiExecutionContext execContext) {
         this.pageSize = pageSize;
         this.wc = wc;
-        this.ec = ec;
+        this.execContext = execContext;
        
         this.pageInfo = new PageInfo(0, pageSize);
     }
 
     public Page<Account> nextPage() throws Exception {
-        if (!isFetchDone) {
-            addToQueue();
-            isFetchDone = true;
+        if (!isFetchDone.get()) {
+            CompletableFuture.runAsync(() -> {
+                try { 
+                    addToQueue();
+                } catch (Exception ex) {
+                    MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
+                }
+            }, execContext);
         }
+
         return queue.poll();
     }
 
-    // TODO: on another thread
+    // executes on background thread 
     protected void addToQueue() throws Exception {
         boolean isDone = false;
 
@@ -67,6 +74,7 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
 
             if (page.isPoisonPill()) {
                 isDone = true;
+                isFetchDone.set(true);
                 break;
             }
 
@@ -83,15 +91,9 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
         int pageNum = pageInfo.pageNum;
         int pageSize = pageInfo.pageSize;   
         int maxSize = 50;
+        String delayInSeconds = "" + (int)(Math.random() * 3);
         String targetURL = String.format(Constants.ACCOUNT_URL_FORMAT, pageNum, pageSize, maxSize);
         return targetURL;
-    }
-
-    protected CompletableFuture<List<Account>> buildApiCall(PageInfo pageInfo) {
-        String targetURL = buildURL(pageInfo);
-        utils.Timer timer = new utils.Timer();
-
-        return wc.url(targetURL).get().thenApplyAsync(response -> processApiResponse(response, timer), ec).toCompletableFuture();
     }
 
     protected List<Account> processApiResponse(WSResponse response, utils.Timer timer) {
@@ -102,6 +104,11 @@ public class ConcurrentPageSupplier implements PageSupplier<Account> {
             ObjectMapper mapper = new ObjectMapper();
 
             results = mapper.readValue(responseBody, new TypeReference<List<Account>>() {});
+
+            for (Account account : results) {
+                account.setThreadId(Thread.currentThread().threadId());
+                account.setElapsed(timer.getElapsed(""));
+            }
         } catch (Exception ex) {
             MyLogger.log(logger, "wc caught exception ex: " + ex.getMessage());
         }
