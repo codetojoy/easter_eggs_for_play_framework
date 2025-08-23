@@ -1,10 +1,12 @@
-package services.sandbox;
+package modules;
 
 import com.google.inject.AbstractModule;
 import com.google.inject.Provider;
 import com.google.inject.Provides;
 import com.google.inject.name.Named;
 import java.util.logging.Logger;
+
+import services.sandbox.*;
 
 import static services.sandbox.util.MyLog.buildLog;
 
