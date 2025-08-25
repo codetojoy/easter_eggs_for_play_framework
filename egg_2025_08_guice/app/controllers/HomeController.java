@@ -7,9 +7,16 @@ import play.mvc.*;
 import javax.inject.Inject;
 import javax.inject.Singleton;
 
+import play.api.libs.json.Json;
+
+import services.sandbox.UserService;
+
 public class HomeController extends Controller {
+    private final UserService userService;
+
     @Inject
-    public HomeController() {
+    public HomeController(UserService userService) {
+        this.userService = userService; 
     }
 
     public Result index() {
@@ -17,6 +24,9 @@ public class HomeController extends Controller {
     }
 
     public Result sandbox(Http.Request request) throws Exception {
-        return ok(views.html.sandbox.render());
+        String userResult = userService.getUser("7170");
+
+        String prettyUserResult = Json.prettyPrint(Json.parse(userResult));
+        return ok(views.html.sandbox.render(prettyUserResult));
     }
 }
