@@ -3,6 +3,7 @@
 
 * simple AccountService as a sanity-check
 * Guice modules from another repo 
+* use `sandbox` link on main page
 
 ### Version
 
