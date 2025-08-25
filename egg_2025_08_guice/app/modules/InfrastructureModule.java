@@ -20,14 +20,14 @@ public class InfrastructureModule extends AbstractModule {
 
         requestStaticInjection(DBServiceImpl.class);
         
-        logger.info(buildLog("InfrastructureModule: init OK"));
+        System.out.println(buildLog("InfrastructureModule: init OK"));
     }
     
     // Provide named configurations that BusinessLogic Module might need
     @Provides
     @Named("module.infra.ready")
     public Boolean provideModuleAReadyFlag(DBService dbService) {
-        logger.info(buildLog("InfrastructureModule: checking for ready"));
+        System.out.println(buildLog("InfrastructureModule: checking for ready"));
         return dbService.isInitialized();
     }
 }

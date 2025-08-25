@@ -12,13 +12,11 @@ import static services.sandbox.util.MyLog.buildLog;
 
 // Module B: Business Logic Module (depends on Module A)
 public class BusinessLogicModule extends AbstractModule {
-    private static final Logger logger = Logger.getLogger(BusinessLogicModule.class.getName());
-    
     @Override
     protected void configure() {
         bind(UserService.class).to(UserServiceImpl.class);
         
-        logger.info(buildLog("BusinessLogicModule: init OK"));
+        System.out.println(buildLog("BusinessLogicModule: init OK"));
     }
     
     // Verify Module A is ready before allowing Module B services
@@ -28,7 +26,7 @@ public class BusinessLogicModule extends AbstractModule {
         if (!infraModuleReady) {
             throw new IllegalStateException("Infra Module must be fully initialized before BusinessLogic Module!");
         }
-        logger.info(buildLog("BusinessLogicModule validation passed - InfraModule is ready"));
+        System.out.println(buildLog("BusinessLogicModule validation passed - InfraModule is ready"));
         return "Module B validated against Module A";
     }
 }
