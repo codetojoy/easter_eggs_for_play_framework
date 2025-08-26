@@ -14,6 +14,9 @@ import static services.sandbox.util.MyLog.buildLog;
 public class CustomApplicationLoader extends GuiceApplicationLoader {
     @Override
     public GuiceApplicationBuilder builder(ApplicationLoader.Context context) {
+        // This isn't correct as it creates two injectors, 
+        // one inline and then one by Play when it calls super.builder(context).
+
         // Create a separate injector for early services only
         Injector injector = Guice.createInjector(new InfrastructureModule(), new BusinessLogicModule());
         
