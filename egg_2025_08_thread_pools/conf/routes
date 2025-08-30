@@ -1,5 +1,6 @@
 # Home page
-GET     /                           controllers.HomeController.index
+GET     /                   controllers.HomeController.index
 
-GET     /accounts                   controllers.AccountController.getAccounts(request: Request)
+GET     /accounts-v1        controllers.AccountController.getAccounts_v1(request: Request)
+GET     /accounts-v2        controllers.AccountController.getAccounts_v2(request: Request)
 

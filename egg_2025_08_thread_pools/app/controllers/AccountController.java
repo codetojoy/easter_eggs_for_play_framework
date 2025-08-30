@@ -38,12 +38,22 @@ public class AccountController extends Controller {
         return accountIds;
     }
 
-    public Result getAccounts(Http.Request request) throws Exception {
+    public Result getAccounts_v1(Http.Request request) throws Exception {
         var accountIds = genAccountIds();
 
         var timer = new utils.Timer();
-        List<Account> receivedAccounts = accountService.fetchInfoForAccounts(accountIds);
-        String timeMessage = timer.getElapsed("overall request time");
+        List<Account> receivedAccounts = accountService.fetch_v1(accountIds);
+        String timeMessage = timer.getElapsed("time");
+
+        return ok(views.html.accounts.render(receivedAccounts, timeMessage));
+    }
+
+    public Result getAccounts_v2(Http.Request request) throws Exception {
+        var accountIds = genAccountIds();
+
+        var timer = new utils.Timer();
+        List<Account> receivedAccounts = accountService.fetch_v2(accountIds);
+        String timeMessage = timer.getElapsed("time");
 
         return ok(views.html.accounts.render(receivedAccounts, timeMessage));
     }
