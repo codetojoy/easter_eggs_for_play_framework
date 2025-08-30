@@ -27,11 +27,20 @@ public class AccountService {
         MyLogger.log(message);
     }
 
+    // Play default thread pool
     public List<Account> fetch_v1(List<Integer> accountIds) throws Exception {
         return doFetch(accountIds);
     }
 
+    // JVM ForkJoin pool
     public List<Account> fetch_v2(List <Integer> accountIds) throws Exception {
+        return CompletableFuture.supplyAsync(() -> {
+            return doFetch(accountIds);
+        }).get();
+    }
+
+    // Custom ExecutionContext pool
+    public List<Account> fetch_v3(List <Integer> accountIds) throws Exception {
         return CompletableFuture.supplyAsync(() -> {
             return doFetch(accountIds);
         }, execContext).get();

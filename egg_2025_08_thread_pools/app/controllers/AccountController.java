@@ -21,6 +21,11 @@ public class AccountController extends Controller {
 
     private final static int NUM_ACCOUNTS = 10;
 
+    private final static int MODE_1 = 1;
+    private final static int MODE_2 = 2;
+    private final static int MODE_3 = 3;
+    private final static int MODE_4 = 4;
+
     @Inject
     public AccountController(AccountService accountService) {
         this.accountService = accountService;
@@ -39,20 +44,37 @@ public class AccountController extends Controller {
     }
 
     public Result getAccounts_v1(Http.Request request) throws Exception {
-        var accountIds = genAccountIds();
-
-        var timer = new utils.Timer();
-        List<Account> receivedAccounts = accountService.fetch_v1(accountIds);
-        String timeMessage = timer.getElapsed("time");
-
-        return ok(views.html.accounts.render(receivedAccounts, timeMessage));
+        return internalGetAccounts(MODE_1);
     }
 
     public Result getAccounts_v2(Http.Request request) throws Exception {
+        return internalGetAccounts(MODE_2);
+    }
+
+    public Result getAccounts_v3(Http.Request request) throws Exception {
+        return internalGetAccounts(MODE_3);
+    }
+
+    public Result getAccounts_v4(Http.Request request) throws Exception {
+        return internalGetAccounts(MODE_4);
+    }
+
+    public Result internalGetAccounts(int mode) throws Exception {
         var accountIds = genAccountIds();
 
         var timer = new utils.Timer();
-        List<Account> receivedAccounts = accountService.fetch_v2(accountIds);
+        List<Account> receivedAccounts = List.of();
+
+        if (mode == 1) {
+            receivedAccounts = accountService.fetch_v1(accountIds);
+        } else if (mode == 2) {
+            receivedAccounts = accountService.fetch_v2(accountIds);
+        } else if (mode == 3) {
+            receivedAccounts = accountService.fetch_v3(accountIds);
+        } else if (mode == 4) {
+            // receivedAccounts = accountService.fetch_v4(accountIds);
+        }
+        
         String timeMessage = timer.getElapsed("time");
 
         return ok(views.html.accounts.render(receivedAccounts, timeMessage));
