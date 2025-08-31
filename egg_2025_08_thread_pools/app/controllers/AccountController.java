@@ -72,7 +72,7 @@ public class AccountController extends Controller {
         } else if (mode == 3) {
             receivedAccounts = accountService.fetch_v3(accountIds);
         } else if (mode == 4) {
-            // receivedAccounts = accountService.fetch_v4(accountIds);
+            receivedAccounts = accountService.fetch_v4(accountIds);
         }
         
         String timeMessage = timer.getElapsed("time");

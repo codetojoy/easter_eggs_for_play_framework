@@ -16,11 +16,14 @@ import services.AccountApiExecutionContext;
 public class AccountService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
-    private final AccountApiExecutionContext execContext;
+    private final AccountApiExecutionContext accountApiExecContext;
+    private final LongRunningExecutionContext longRunningExecContext;
 
     @Inject
-    public AccountService(AccountApiExecutionContext execContext) {
-        this.execContext = execContext;
+    public AccountService(AccountApiExecutionContext accountApiExecContext,
+                          LongRunningExecutionContext longRunningExecContext) {
+        this.accountApiExecContext = accountApiExecContext;
+        this.longRunningExecContext = longRunningExecContext;
     }
 
     private void log(String message) {
@@ -43,7 +46,17 @@ public class AccountService {
     public List<Account> fetch_v3(List <Integer> accountIds) throws Exception {
         return CompletableFuture.supplyAsync(() -> {
             return doFetch(accountIds);
-        }, execContext).get();
+        }, longRunningExecContext).get();
+        // }, accountApiExecContext).get();
+    }
+
+    // virtual threads
+    public List<Account> fetch_v4(List <Integer> accountIds) throws Exception {
+        ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor();
+
+        return CompletableFuture.supplyAsync(() -> {
+            return doFetch(accountIds);
+        }, virtualExecutor).get();
     }
 
     private List<Account> doFetch(List<Integer> accountIds) {
@@ -56,6 +69,9 @@ public class AccountService {
                 String name = "Mozart " + (5150 + accountId);
                 String address = accountId + " Queen Street";
                 String threadName = Thread.currentThread().getName();
+                if (threadName.isEmpty()) {
+                    threadName = "virtual-" + Long.toString(Thread.currentThread().threadId());
+                } 
                 accounts.add(new Account(accountId, name, address, threadName));
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
