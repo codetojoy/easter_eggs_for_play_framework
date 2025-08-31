@@ -4,6 +4,9 @@ package services;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.stream.Collectors;
+import play.libs.concurrent.CustomExecutionContext;
+
 import org.slf4j.*;
 
 import models.Account;
@@ -14,8 +17,8 @@ public class AccountService {
     private final AccountApiExecutionContext accountApiExecContext;
     private final LongRunningExecutionContext longRunningExecContext;
 
-    private static final int MIN_DELAY_IN_MS = 50;
-    private static final int MAX_DELAY_IN_MS = 750;
+    private static final int MIN_DELAY_IN_MS = 100;
+    private static final int MAX_DELAY_IN_MS = 2000;
     private final Random random = new Random();
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -33,43 +36,50 @@ public class AccountService {
 
     // Play default thread pool
     public List<Account> fetch_v1(List<Integer> accountIds) throws Exception {
-        return accountIds.stream()
-                         .parallel()
-                         .map(id -> doFetch(id))
-                         .toList();
+        List<CompletableFuture<Account>> futures = 
+            accountIds.stream()
+                      .parallel()
+                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id)))
+                      .collect(Collectors.toList());
+       
+        return getAccounts(futures);
     }
 
     // JVM ForkJoin pool
-    public List<Account> fetch_v2(List <Integer> accountIds) throws Exception {
-        return CompletableFuture.supplyAsync(() -> {
-            return accountIds.stream()
-                             .parallel()
-                             .map(id -> doFetch(id))
-                             .toList();
-        }).get();
+    public List<Account> fetch_v2(List<Integer> accountIds) throws Exception {
+        List<CompletableFuture<Account>> futures = 
+            accountIds.stream()
+                      .parallel()
+                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id)))
+                      .collect(Collectors.toList());
+       
+        return getAccounts(futures);
     }
 
     // Custom ExecutionContext pool
     public List<Account> fetch_v3(List <Integer> accountIds) throws Exception {
-        return CompletableFuture.supplyAsync(() -> {
-            return accountIds.stream()
-                             .parallel()
-                             .map(id -> doFetch(id))
-                             .toList();
-        }, longRunningExecContext).get();
-        // }, accountApiExecContext).get();
+        // CustomExecutionContext context = accountApiExecContext;
+        CustomExecutionContext context = longRunningExecContext;
+        List<CompletableFuture<Account>> futures = 
+            accountIds.stream()
+                      .parallel()
+                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id), context))
+                      .collect(Collectors.toList());
+       
+        return getAccounts(futures);
     }
 
     // virtual threads
     public List<Account> fetch_v4(List <Integer> accountIds) throws Exception {
         ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
-        return CompletableFuture.supplyAsync(() -> {
-            return accountIds.stream()
-                             .parallel()
-                             .map(id -> doFetch(id))
-                             .toList();
-        }, virtualExecutor).get();
+        List<CompletableFuture<Account>> futures = 
+            accountIds.stream()
+                      .parallel()
+                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id), virtualExecutor))
+                      .collect(Collectors.toList());
+
+        return getAccounts(futures);
     }
 
     private Account doFetch(Integer accountId) {
@@ -97,5 +107,17 @@ public class AccountService {
 
      private int getRandomDelayInMillis() {
         return new Random().nextInt(MAX_DELAY_IN_MS - MIN_DELAY_IN_MS + 1) + MIN_DELAY_IN_MS;
+    }
+
+    private List<Account> getAccounts(List<CompletableFuture<Account>> futures) {
+        try {
+            return CompletableFuture.allOf(futures.toArray(new CompletableFuture[0]))
+                                    .thenApply(v -> futures.stream()
+                                                        .map(CompletableFuture::join)
+                                                        .collect(Collectors.toList()))
+                                    .get();
+        } catch (Exception e) {
+            return List.of();
+        }
     }
 }
