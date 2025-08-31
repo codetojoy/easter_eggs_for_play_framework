@@ -19,7 +19,7 @@ import services.AccountService;
 public class AccountController extends Controller {
     private final AccountService accountService;
 
-    private final static int NUM_ACCOUNTS = 10;
+    private final static int NUM_ACCOUNTS = 25;
 
     private final static int MODE_1 = 10;
     private final static int MODE_2a = 21;

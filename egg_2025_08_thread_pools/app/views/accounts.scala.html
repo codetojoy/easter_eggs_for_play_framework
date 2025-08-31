@@ -3,6 +3,7 @@
 
 @main("Accounts") {
 
+
 <style>
 
 table {
@@ -37,8 +38,31 @@ tbody tr:hover {
 
 </style>
 
+<script>
+    $(document).ready(function() {
+        $('#countThreadsButton').click(function() {
+                const uniqueValues = new Set();
+
+                const threadNameElements = $('td.thread-name');
+    
+                threadNameElements.each(function() {
+                    const textContent = $(this).text().trim(); 
+                    if (textContent) { 
+                        uniqueValues.add(textContent);
+                    }
+                });
+    
+                $('#threadCountResult').text(`# unique thread names: ${uniqueValues.size}`);
+        });
+    });
+</script>
+
     <p>
         <a href="http://localhost:9000">Home</a>
+    </p>
+    <p>
+        <button id="countThreadsButton">Count Unique Thread Names</button>
+        <div id="threadCountResult"></div>
     </p>
     <p>message: @timeMessage</p>
     <hr/>
@@ -57,7 +81,7 @@ tbody tr:hover {
                 <td>@account.getName()</td>
                 <td>@account.getId()</td>
                 <td>@account.getElapsed()</td>
-                <td>@account.getThreadName()</td>
+                <td class="thread-name">@account.getThreadName()</td>
             </tr>
         }
         </tbody>
