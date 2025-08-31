@@ -36,13 +36,10 @@ public class AccountService {
 
     // Play default thread pool
     public List<Account> fetch_v1(List<Integer> accountIds) throws Exception {
-        List<CompletableFuture<Account>> futures = 
-            accountIds.stream()
-                      .parallel()
-                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id)))
-                      .collect(Collectors.toList());
-       
-        return getAccounts(futures);
+        return accountIds.stream()
+                         .parallel()
+                         .map(id -> doFetch(id))
+                         .toList();
     }
 
     // JVM ForkJoin pool
