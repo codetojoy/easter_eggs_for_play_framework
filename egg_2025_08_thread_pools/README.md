@@ -1,13 +1,12 @@
 
 ### Usage
 
-* run this project and go to http://localhost:9000
+* `./run.sh` and open http://localhost:9000
 * the AccountService simulates work
 
 ### TODO
 
-* parallel stream
-* use thread per account id
+* v1 needs to use Play default
 
 ### Version
 
