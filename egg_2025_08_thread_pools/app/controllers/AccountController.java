@@ -21,10 +21,11 @@ public class AccountController extends Controller {
 
     private final static int NUM_ACCOUNTS = 10;
 
-    private final static int MODE_1 = 1;
-    private final static int MODE_2 = 2;
-    private final static int MODE_3 = 3;
-    private final static int MODE_4 = 4;
+    private final static int MODE_1 = 10;
+    private final static int MODE_2a = 21;
+    private final static int MODE_2b = 23;
+    private final static int MODE_3 = 30;
+    private final static int MODE_4 = 40;
 
     @Inject
     public AccountController(AccountService accountService) {
@@ -47,8 +48,12 @@ public class AccountController extends Controller {
         return internalGetAccounts(MODE_1);
     }
 
-    public Result getAccounts_v2(Http.Request request) throws Exception {
-        return internalGetAccounts(MODE_2);
+    public Result getAccounts_v2a(Http.Request request) throws Exception {
+        return internalGetAccounts(MODE_2a);
+    }
+
+    public Result getAccounts_v2b(Http.Request request) throws Exception {
+        return internalGetAccounts(MODE_2b);
     }
 
     public Result getAccounts_v3(Http.Request request) throws Exception {
@@ -65,13 +70,15 @@ public class AccountController extends Controller {
         var timer = new utils.Timer();
         List<Account> receivedAccounts = List.of();
 
-        if (mode == 1) {
+        if (mode == MODE_1) {
             receivedAccounts = accountService.fetch_v1(accountIds);
-        } else if (mode == 2) {
-            receivedAccounts = accountService.fetch_v2(accountIds);
-        } else if (mode == 3) {
+        } else if (mode == MODE_2a) {
+            receivedAccounts = accountService.fetch_v2a(accountIds);
+        } else if (mode == MODE_2b) {
+            receivedAccounts = accountService.fetch_v2b(accountIds);
+        } else if (mode == MODE_3) {
             receivedAccounts = accountService.fetch_v3(accountIds);
-        } else if (mode == 4) {
+        } else if (mode == MODE_4) {
             receivedAccounts = accountService.fetch_v4(accountIds);
         }
         

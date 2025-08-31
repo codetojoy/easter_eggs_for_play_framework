@@ -13,8 +13,7 @@ import models.Account;
 import utils.MyLogger;
 
 public class AccountService {
-
-    private final AccountApiExecutionContext accountApiExecContext;
+    private final ApiExecutionContext apiExecContext;
     private final LongRunningExecutionContext longRunningExecContext;
 
     private static final int MIN_DELAY_IN_MS = 100;
@@ -24,9 +23,9 @@ public class AccountService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public AccountService(AccountApiExecutionContext accountApiExecContext,
+    public AccountService(ApiExecutionContext apiExecContext,
                           LongRunningExecutionContext longRunningExecContext) {
-        this.accountApiExecContext = accountApiExecContext;
+        this.apiExecContext = apiExecContext;
         this.longRunningExecContext = longRunningExecContext;
     }
 
@@ -35,6 +34,7 @@ public class AccountService {
     }
 
     // Play default thread pool
+    // front of house wait staff
     public List<Account> fetch_v1(List<Integer> accountIds) throws Exception {
         return accountIds.stream()
                          .parallel()
@@ -42,21 +42,11 @@ public class AccountService {
                          .toList();
     }
 
-    // JVM ForkJoin pool
-    public List<Account> fetch_v2(List<Integer> accountIds) throws Exception {
-        List<CompletableFuture<Account>> futures = 
-            accountIds.stream()
-                      .parallel()
-                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id)))
-                      .collect(Collectors.toList());
-       
-        return getAccounts(futures);
-    }
+    // Custom ExecutionContext pool a (api)
+    // kitchen staff
+    public List<Account> fetch_v2a(List <Integer> accountIds) throws Exception {
+        CustomExecutionContext context = apiExecContext;
 
-    // Custom ExecutionContext pool
-    public List<Account> fetch_v3(List <Integer> accountIds) throws Exception {
-        // CustomExecutionContext context = accountApiExecContext;
-        CustomExecutionContext context = longRunningExecContext;
         List<CompletableFuture<Account>> futures = 
             accountIds.stream()
                       .parallel()
@@ -66,7 +56,34 @@ public class AccountService {
         return getAccounts(futures);
     }
 
+    // Custom ExecutionContext pool b (long-running)
+    // kitchen staff
+    public List<Account> fetch_v2b(List <Integer> accountIds) throws Exception {
+        CustomExecutionContext context = longRunningExecContext;
+
+        List<CompletableFuture<Account>> futures = 
+            accountIds.stream()
+                      .parallel()
+                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id), context))
+                      .collect(Collectors.toList());
+       
+        return getAccounts(futures);
+    }
+
+    // JVM ForkJoin pool
+    // utility contractors
+    public List<Account> fetch_v3(List<Integer> accountIds) throws Exception {
+        List<CompletableFuture<Account>> futures = 
+            accountIds.stream()
+                      .parallel()
+                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id)))
+                      .collect(Collectors.toList());
+       
+        return getAccounts(futures);
+    }
+
     // virtual threads
+    // special category
     public List<Account> fetch_v4(List <Integer> accountIds) throws Exception {
         ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
