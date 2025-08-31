@@ -1,17 +1,13 @@
 
 package services;
 
-import org.slf4j.*;
-
+import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.*;
-
-import javax.inject.Inject;
-import javax.inject.Singleton;
+import org.slf4j.*;
 
 import models.Account;
 import utils.MyLogger;
-import services.AccountApiExecutionContext;
 
 public class AccountService {
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -32,13 +28,19 @@ public class AccountService {
 
     // Play default thread pool
     public List<Account> fetch_v1(List<Integer> accountIds) throws Exception {
-        return doFetch(accountIds);
+        return accountIds.stream()
+                         .parallel()
+                         .map(id -> doFetch(id))
+                         .toList();
     }
 
     // JVM ForkJoin pool
     public List<Account> fetch_v2(List <Integer> accountIds) throws Exception {
         return CompletableFuture.supplyAsync(() -> {
-            return doFetch(accountIds);
+            return accountIds.stream()
+                             .parallel()
+                             .map(id -> doFetch(id))
+                             .toList();
         }).get();
     }
 
