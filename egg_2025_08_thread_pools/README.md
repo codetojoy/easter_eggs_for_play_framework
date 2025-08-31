@@ -4,6 +4,11 @@
 * run this project and go to http://localhost:9000
 * the AccountService simulates work
 
+### TODO
+
+* parallel stream
+* use thread per account id
+
 ### Version
 
 $ java --version

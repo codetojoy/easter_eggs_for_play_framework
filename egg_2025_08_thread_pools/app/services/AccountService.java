@@ -63,21 +63,31 @@ public class AccountService {
         List<Account> accounts = new ArrayList<>();
 
         for (Integer accountId : accountIds) {
-            log("fetching info for account " + accountId);
-            try {
-                Thread.sleep(100); // simulating API call
-                String name = "Mozart " + (5150 + accountId);
-                String address = accountId + " Queen Street";
-                String threadName = Thread.currentThread().getName();
-                if (threadName.isEmpty()) {
-                    threadName = "virtual-" + Long.toString(Thread.currentThread().threadId());
-                } 
-                accounts.add(new Account(accountId, name, address, threadName));
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-            }
+            accounts.add(doFetch(accountId));
         }
 
         return accounts;
+    }
+
+    private Account doFetch(Integer accountId) {
+        log("fetching info for account " + accountId);
+        try {
+            Thread.sleep(100); // simulating API call
+
+            String name = "Mozart " + (5150 + accountId);
+            String address = accountId + " Queen Street";
+
+            return new Account(accountId, name, address, getThreadName());
+        } catch (InterruptedException e) {
+        }
+        return null;
+    }
+
+    private String getThreadName() {
+        String threadName = Thread.currentThread().getName();
+        if (threadName.isEmpty()) {
+            threadName = "virtual-" + Thread.currentThread().threadId();
+        } 
+        return threadName;
     }
 }
