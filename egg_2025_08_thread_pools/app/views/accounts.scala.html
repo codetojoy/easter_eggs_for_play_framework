@@ -3,40 +3,39 @@
 
 @main("Accounts") {
 
-    <style>
-/* Even column spacing for table */
+<style>
+
 table {
     width: 100%;
     table-layout: fixed; /* Forces equal column widths */
     border-collapse: collapse;
 }
 
-/* Each column gets equal width (33.33% for 3 columns) */
 th, td {
-    width: 33.33%;
     padding: 8px 12px;
     text-align: left;
     border: 1px solid #ddd;
-    word-wrap: break-word; /* Handles long content */
-    overflow-wrap: break-word;
 }
 
-/* Optional: Header styling */
 th {
     background-color: #f5f5f5;
     font-weight: bold;
 }
 
-/* Optional: Alternating row colors */
 tbody tr:nth-child(even) {
     background-color: #f9f9f9;
 }
 
-/* Optional: Hover effect */
+td:nth-child(4),
+th:nth-child(4) {
+  width: 50%;
+}
+
 tbody tr:hover {
     background-color: #f0f0f0;
 }
-    </style>
+
+</style>
 
     <p>message: @timeMessage</p>
     <hr/>
@@ -45,6 +44,7 @@ tbody tr:hover {
             <tr>
                 <th>Acct Name</th>
                 <th>Acct Id</th>
+                <th>Elapsed</th>
                 <th>Thread Name</th>
             </tr>
         </thead>
@@ -53,6 +53,7 @@ tbody tr:hover {
             <tr>
                 <td>@account.getName()</td>
                 <td>@account.getId()</td>
+                <td>@account.getElapsed()</td>
                 <td>@account.getThreadName()</td>
             </tr>
         }

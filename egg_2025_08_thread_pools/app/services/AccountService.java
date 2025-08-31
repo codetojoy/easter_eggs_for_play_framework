@@ -10,10 +10,15 @@ import models.Account;
 import utils.MyLogger;
 
 public class AccountService {
-    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     private final AccountApiExecutionContext accountApiExecContext;
     private final LongRunningExecutionContext longRunningExecContext;
+
+    private static final int MIN_DELAY_IN_MS = 50;
+    private static final int MAX_DELAY_IN_MS = 750;
+    private final Random random = new Random();
+
+    private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
     public AccountService(AccountApiExecutionContext accountApiExecContext,
@@ -47,7 +52,10 @@ public class AccountService {
     // Custom ExecutionContext pool
     public List<Account> fetch_v3(List <Integer> accountIds) throws Exception {
         return CompletableFuture.supplyAsync(() -> {
-            return doFetch(accountIds);
+            return accountIds.stream()
+                             .parallel()
+                             .map(id -> doFetch(id))
+                             .toList();
         }, longRunningExecContext).get();
         // }, accountApiExecContext).get();
     }
@@ -57,29 +65,23 @@ public class AccountService {
         ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor();
 
         return CompletableFuture.supplyAsync(() -> {
-            return doFetch(accountIds);
+            return accountIds.stream()
+                             .parallel()
+                             .map(id -> doFetch(id))
+                             .toList();
         }, virtualExecutor).get();
-    }
-
-    private List<Account> doFetch(List<Integer> accountIds) {
-        List<Account> accounts = new ArrayList<>();
-
-        for (Integer accountId : accountIds) {
-            accounts.add(doFetch(accountId));
-        }
-
-        return accounts;
     }
 
     private Account doFetch(Integer accountId) {
         log("fetching info for account " + accountId);
         try {
-            Thread.sleep(100); // simulating API call
+            long delayInMillis = (long) getRandomDelayInMillis();
+            Thread.sleep(delayInMillis); // simulating API call
 
             String name = "Mozart " + (5150 + accountId);
             String address = accountId + " Queen Street";
-
-            return new Account(accountId, name, address, getThreadName());
+            String elapsed = delayInMillis + " ms";
+            return new Account(accountId, name, address, getThreadName(), elapsed);
         } catch (InterruptedException e) {
         }
         return null;
@@ -91,5 +93,9 @@ public class AccountService {
             threadName = "virtual-" + Thread.currentThread().threadId();
         } 
         return threadName;
+    }
+
+     private int getRandomDelayInMillis() {
+        return new Random().nextInt(MAX_DELAY_IN_MS - MIN_DELAY_IN_MS + 1) + MIN_DELAY_IN_MS;
     }
 }
