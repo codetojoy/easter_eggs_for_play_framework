@@ -7,7 +7,7 @@ import play.libs.concurrent.CustomExecutionContext;
 import javax.inject.Inject;
 
 public class LongRunningExecutionContext extends CustomExecutionContext {
-    private static final String LONG_RUNNING_POOL = "longrunning.api.pool";
+    private static final String LONG_RUNNING_POOL = "long.running.pool";
 
     @Inject
     public LongRunningExecutionContext(ActorSystem actorSystem) {

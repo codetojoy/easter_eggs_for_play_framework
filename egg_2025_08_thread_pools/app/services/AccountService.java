@@ -16,8 +16,8 @@ public class AccountService {
     private final ApiExecutionContext apiExecContext;
     private final LongRunningExecutionContext longRunningExecContext;
 
-    private static final int MIN_DELAY_IN_MS = 100;
-    private static final int MAX_DELAY_IN_MS = 2000;
+    private static final int MIN_DELAY_IN_MS = 120;
+    private static final int MAX_DELAY_IN_MS = 1200;
     private final Random random = new Random();
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
