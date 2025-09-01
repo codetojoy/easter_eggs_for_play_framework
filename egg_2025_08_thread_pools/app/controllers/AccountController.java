@@ -21,6 +21,7 @@ public class AccountController extends Controller {
 
     private final static int NUM_ACCOUNTS = 25;
 
+    private final static int MODE_0 = 0;
     private final static int MODE_1 = 10;
     private final static int MODE_2a = 21;
     private final static int MODE_2b = 23;
@@ -42,6 +43,10 @@ public class AccountController extends Controller {
             accountIds.add(i);
         }
         return accountIds;
+    }
+
+    public Result getAccounts_v0(Http.Request request) throws Exception {
+        return internalGetAccounts(MODE_0);
     }
 
     public Result getAccounts_v1(Http.Request request) throws Exception {
@@ -70,7 +75,9 @@ public class AccountController extends Controller {
         var timer = new utils.Timer();
         List<Account> receivedAccounts = List.of();
 
-        if (mode == MODE_1) {
+        if (mode == MODE_0) {
+            receivedAccounts = accountService.fetch_v0(accountIds);
+        } else if (mode == MODE_1) {
             receivedAccounts = accountService.fetch_v1(accountIds);
         } else if (mode == MODE_2a) {
             receivedAccounts = accountService.fetch_v2a(accountIds);

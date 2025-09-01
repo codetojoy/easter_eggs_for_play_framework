@@ -34,6 +34,11 @@ public class AccountService {
     }
 
     // Play default thread pool
+    public List<Account> fetch_v0(List<Integer> accountIds) throws Exception {
+        return List.of(doFetch(accountIds.get(0)));
+    }
+
+    // Play default thread pool
     // front of house wait staff
     public List<Account> fetch_v1(List<Integer> accountIds) throws Exception {
         return accountIds.stream()
