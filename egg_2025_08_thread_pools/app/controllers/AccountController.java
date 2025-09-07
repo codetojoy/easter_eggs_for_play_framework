@@ -89,7 +89,7 @@ public class AccountController extends Controller {
             receivedAccounts = accountService.fetch_v4(accountIds);
         }
         
-        String timeMessage = timer.getElapsed("time");
+        String timeMessage = "time: " + timer.getElapsed();
 
         return ok(views.html.accounts.render(receivedAccounts, timeMessage));
     }

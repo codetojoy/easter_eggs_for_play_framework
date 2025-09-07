@@ -132,7 +132,7 @@ public class AccountService {
         log("doFetch: url: " + url);
         ApiResult apiResult = doFetch_v2(url);
 
-        String elapsed = timer.getElapsed("");
+        String elapsed = timer.getElapsed();
         return new Account(accountId, name, address, getThreadName(), elapsed);
     }
 

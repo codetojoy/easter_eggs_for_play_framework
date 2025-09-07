@@ -6,8 +6,8 @@ public class Timer {
     private long beginInNano;
     private long thresholdInMillis;
 
-    private static final String SECONDS_FORMAT = " %s %.3f seconds elapsed";
-    private static final String MINUTES_FORMAT = " %s %.3f minutes elapsed";
+    private static final String SECONDS_FORMAT = "  %.3f s";
+    private static final String MINUTES_FORMAT = "  %.3f min";
 
     private static final long SIXTY_SECONDS_IN_MILLIS = 60 * 1000L;
     private static final long ONE_SECOND_IN_MILLIS = 1 * 1000L;
@@ -18,29 +18,17 @@ public class Timer {
         thresholdInMillis = THRESHOLD_IN_SECONDS * 1000L;
     }
 
-    public Timer(int thresholdInSeconds) {
-        beginInNano = System.nanoTime();
-        thresholdInMillis = thresholdInSeconds * 1000L;
-    }
-
-    public boolean isPastThreshold() {
-        long elapsedInMillis = getElapsedInMillis();
-        boolean result = (elapsedInMillis > thresholdInMillis);
-        return result;
-    }
-
-    public boolean exceedsThreshold() { return isPastThreshold(); } 
-    public String getElapsed(String prefix) {
+    public String getElapsed() {
         String result = "N/A";
 
         long elapsedInMillis = getElapsedInMillis();
 
         if (elapsedInMillis > SIXTY_SECONDS_IN_MILLIS) {
            double elapsedInMinutes = elapsedInMillis / (1.0 * SIXTY_SECONDS_IN_MILLIS);
-           result = String.format(MINUTES_FORMAT, prefix, elapsedInMinutes);
+           result = String.format(MINUTES_FORMAT, elapsedInMinutes);
         } else {
            double elapsedInSeconds = elapsedInMillis / (1.0 * ONE_SECOND_IN_MILLIS);
-           result = String.format(SECONDS_FORMAT, prefix, elapsedInSeconds);
+           result = String.format(SECONDS_FORMAT, elapsedInSeconds);
         }
 
         return result;
