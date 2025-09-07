@@ -10,14 +10,30 @@ import play.libs.concurrent.CustomExecutionContext;
 import org.slf4j.*;
 
 import models.Account;
+import utils.Constants;
 import utils.MyLogger;
+
+import java.net.http.*;
+import java.nio.charset.StandardCharsets;
+import java.net.URI;
+import java.util.Collection;
+import java.util.List;                           
+import java.util.Random;                         
+import java.util.concurrent.*;                   
+import java.util.concurrent.atomic.AtomicInteger;
+            
+import com.fasterxml.jackson.databind.*;
+import com.fasterxml.jackson.core.type.TypeReference;
+
+import java.nio.charset.StandardCharsets;
+import java.net.URLEncoder;
 
 public class AccountService {
     private final ApiExecutionContext apiExecContext;
     private final LongRunningExecutionContext longRunningExecContext;
 
-    private static final int MIN_DELAY_IN_MS = 120;
-    private static final int MAX_DELAY_IN_MS = 1200;
+    private static final int MIN_DELAY_IN_SECONDS = 0;
+    private static final int MAX_DELAY_IN_SECONDS = 4;
     private final Random random = new Random();
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
@@ -103,17 +119,47 @@ public class AccountService {
 
     private Account doFetch(Integer accountId) {
         log("fetching info for account " + accountId);
-        try {
-            long delayInMillis = (long) getRandomDelayInMillis();
-            Thread.sleep(delayInMillis); // simulating API call
+        utils.Timer timer = new utils.Timer();
+        String name = "Mozart " + (5150 + accountId);
+        String address = accountId + " Queen Street";
+        int delayInSeconds = getRandomDelayInSeconds();
 
-            String name = "Mozart " + (5150 + accountId);
-            String address = accountId + " Queen Street";
-            String elapsed = delayInMillis + " ms";
-            return new Account(accountId, name, address, getThreadName(), elapsed);
-        } catch (InterruptedException e) {
+        String url = String.format(Constants.ACCOUNT_URL_FORMAT, 
+                        accountId, 
+                        URLEncoder.encode(name, StandardCharsets.UTF_8), 
+                        URLEncoder.encode(address, StandardCharsets.UTF_8), 
+                        delayInSeconds);
+        log("doFetch: url: " + url);
+        ApiResult apiResult = doFetch_v2(url);
+
+        String elapsed = timer.getElapsed("");
+        return new Account(accountId, name, address, getThreadName(), elapsed);
+    }
+
+    private ApiResult doFetch_v2(String url) {
+        ApiResult result = null;
+
+        try {
+            URI targetURI = new URI(url);
+            HttpRequest httpRequest = HttpRequest.newBuilder()
+                                                 .uri(targetURI)
+                                                 .GET()
+                                                 .build();
+
+            HttpClient httpClient = HttpClient.newHttpClient();
+            HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
+
+            ObjectMapper objectMapper = new ObjectMapper();
+            result = objectMapper.readValue(response.body(), ApiResult.class);
+
+            // result.setThreadId(Thread.currentThread().threadId());
+            // result.setElapsed(timer.getElapsed(""));
+            log("url fetcher OK");
+        } catch (Exception ex) {
+            log("url fetcher: ERROR caught ex: " + ex.getMessage());
         }
-        return null;
+
+        return result;
     }
 
     private String getThreadName() {
@@ -124,8 +170,8 @@ public class AccountService {
         return threadName;
     }
 
-     private int getRandomDelayInMillis() {
-        return new Random().nextInt(MAX_DELAY_IN_MS - MIN_DELAY_IN_MS + 1) + MIN_DELAY_IN_MS;
+     private int getRandomDelayInSeconds() {
+        return new Random().nextInt(MAX_DELAY_IN_SECONDS - MIN_DELAY_IN_SECONDS + 1) + MIN_DELAY_IN_SECONDS;
     }
 
     private List<Account> getAccounts(List<CompletableFuture<Account>> futures) {

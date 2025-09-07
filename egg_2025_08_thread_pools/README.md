@@ -1,12 +1,13 @@
 
 ### Usage
 
+* requires a server such as [this one](https://github.com/codetojoy/simple-server-java)
 * `./run.sh` and open http://localhost:9000
-* the AccountService simulates work
+* NEW: AccountService no longer sleeps, but calls a simple API 
 
 ### TODO
 
-* v1 needs to use Play default
+* TBD
 
 ### Version
 
