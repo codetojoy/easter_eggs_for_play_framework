@@ -1,4 +1,4 @@
-name := """api-fan-out"""
+name := """thread-pools-jdk25"""
 
 version := "1.0-SNAPSHOT"
 
@@ -14,9 +14,8 @@ libraryDependencies ++= Seq(
   guice
 )
 
-// disabled until https://github.com/playframework/playframework/issues/9845 is solved
-//scalacOptions ++= List("-encoding", "utf8", "-Xfatal-warnings", "-deprecation")
 javacOptions ++= Seq(
+  "--enable-preview", "--release", "25",
   "-Xlint:unchecked",
   "-Xlint:deprecation"
 ) 

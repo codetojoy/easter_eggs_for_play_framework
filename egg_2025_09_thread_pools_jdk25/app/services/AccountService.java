@@ -4,6 +4,8 @@ package services;
 import javax.inject.Inject;
 import java.util.*;
 import java.util.concurrent.*;
+import java.util.concurrent.StructuredTaskScope.Joiner;
+import java.util.concurrent.StructuredTaskScope.Subtask;
 import java.util.stream.Collectors;
 import play.libs.concurrent.CustomExecutionContext;
 
@@ -106,15 +108,15 @@ public class AccountService {
     // virtual threads
     // special category
     public List<Account> fetch_v4(List <Integer> accountIds) throws Exception {
-        ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor();
+        try (var scope = StructuredTaskScope.open(Joiner.<Account>allSuccessfulOrThrow())) {
+            for (Integer id : accountIds) {
+                scope.fork(() -> doFetch(id));
+            }
 
-        List<CompletableFuture<Account>> futures = 
-            accountIds.stream()
-                      .parallel()
-                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id), virtualExecutor))
-                      .collect(Collectors.toList());
-
-        return getAccounts(futures);
+            return scope.join()
+                        .map(Subtask::get)
+                        .toList();
+        }
     }
 
     private Account doFetch(Integer accountId) {

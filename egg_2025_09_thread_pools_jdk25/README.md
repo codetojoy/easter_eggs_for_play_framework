@@ -3,6 +3,7 @@
 
 * uses Play 3.0.9 
 * uses Java 25
+* see `AccountService.fetch_v4()` for use of structured concurrency
 
 ### Usage
 
@@ -12,7 +13,7 @@
 
 ### TODO
 
-* Structured Concurrency
+* TBD 
 
 ### Version
 
