@@ -1,0 +1,91 @@
+
+@(accounts: List[models.Account], timeMessage: String)
+
+@main("Accounts") {
+
+
+<style>
+
+table {
+    width: 100%;
+    table-layout: fixed; /* Forces equal column widths */
+    border-collapse: collapse;
+}
+
+th, td {
+    padding: 8px 12px;
+    text-align: left;
+    border: 1px solid #ddd;
+}
+
+th {
+    background-color: #f5f5f5;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #f9f9f9;
+}
+
+td:nth-child(4),
+th:nth-child(4) {
+  width: 50%;
+}
+
+tbody tr:hover {
+    background-color: #f0f0f0;
+}
+
+</style>
+
+<script>
+    $(document).ready(function() {
+        $('#countThreadsButton').click(function() {
+                const uniqueValues = new Set();
+
+                const threadNameElements = $('td.thread-name');
+    
+                threadNameElements.each(function() {
+                    const textContent = $(this).text().trim(); 
+                    if (textContent) { 
+                        uniqueValues.add(textContent);
+                    }
+                });
+    
+                $('#threadCountResult').text(`# unique thread names: ${uniqueValues.size}`);
+        });
+    });
+</script>
+
+    <p>
+        <a href="http://localhost:9000">Home</a>
+    </p>
+    <p>
+        <button id="countThreadsButton">Count Unique Thread Names</button>
+        <div id="threadCountResult"></div>
+    </p>
+    <p>message: @timeMessage</p>
+    <hr/>
+    <table>
+        <thead>
+            <tr>
+                <th>Acct Name</th>
+                <th>Acct Id</th>
+                <th>Elapsed</th>
+                <th>Thread Name</th>
+            </tr>
+        </thead>
+        <tbody>
+        @for(account <- accounts) {
+            <tr>
+                <td>@account.getName()</td>
+                <td>@account.getId()</td>
+                <td>@account.getElapsed()</td>
+                <td class="thread-name">@account.getThreadName()</td>
+            </tr>
+        }
+        </tbody>
+    </table>
+
+    <hr/>
+}
