@@ -7,6 +7,7 @@ import play.api.Environment;
 
 import com.typesafe.config.Config;
 import actions.WithTimer;
+import actions.WithDuplicateDetection;
 
 public class FooBarController extends Controller {
 
@@ -20,6 +21,7 @@ public class FooBarController extends Controller {
     }
 
     @WithTimer
+    @WithDuplicateDetection
     public Result list() {
         return ok(views.html.foobar.render(env));
     }
