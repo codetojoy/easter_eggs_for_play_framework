@@ -6,9 +6,10 @@ import play.mvc.*;
 import play.api.Environment;
 
 import com.typesafe.config.Config;
+import actions.WithTimer;
 
 public class FooBarController extends Controller {
-   
+
     private Environment env;
     private Config config;
 
@@ -18,6 +19,7 @@ public class FooBarController extends Controller {
         this.config = config;
     }
 
+    @WithTimer
     public Result list() {
         return ok(views.html.foobar.render(env));
     }

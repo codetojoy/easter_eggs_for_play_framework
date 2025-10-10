@@ -6,9 +6,10 @@ import play.mvc.*;
 import play.api.Environment;
 
 import com.typesafe.config.Config;
+import actions.WithTimer;
 
 public class HomeController extends Controller {
-   
+
     private Environment env;
     private Config config;
 
@@ -18,6 +19,7 @@ public class HomeController extends Controller {
         this.config = config;
     }
 
+    @WithTimer
     public Result index() {
         return ok(views.html.index.render(env));
     }
