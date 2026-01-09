@@ -110,11 +110,24 @@ public class AccountService {
 
         List<CompletableFuture<Account>> futures = 
             accountIds.stream()
-                      .parallel()
+                      // .parallel()
                       .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id), virtualExecutor))
                       .collect(Collectors.toList());
 
         return getAccounts(futures);
+    }
+
+    public List<Account> fetch_v5(List <Integer> accountIds) throws Exception {
+        ExecutorService virtualExecutor = Executors.newVirtualThreadPerTaskExecutor();
+
+        List<CompletableFuture<Account>> futures = 
+            accountIds.stream()
+                      .map(id -> CompletableFuture.supplyAsync(() -> doFetch(id), virtualExecutor))
+                      .collect(Collectors.toList());
+
+        return getAccounts(futures).stream()
+                                   .filter(account -> account.getId() % 2 == 0)
+                                   .collect(Collectors.toList());
     }
 
     private Account doFetch(Integer accountId) {

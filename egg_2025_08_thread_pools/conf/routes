@@ -7,5 +7,6 @@ GET     /accounts-v2a       controllers.AccountController.getAccounts_v2a(reques
 GET     /accounts-v2b       controllers.AccountController.getAccounts_v2b(request: Request)
 GET     /accounts-v3        controllers.AccountController.getAccounts_v3(request: Request)
 GET     /accounts-v4        controllers.AccountController.getAccounts_v4(request: Request)
+GET     /accounts-v5        controllers.AccountController.getAccounts_v5(request: Request)
 
 

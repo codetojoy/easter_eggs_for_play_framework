@@ -27,6 +27,7 @@ public class AccountController extends Controller {
     private final static int MODE_2b = 23;
     private final static int MODE_3 = 30;
     private final static int MODE_4 = 40;
+    private final static int MODE_5 = 50;
 
     @Inject
     public AccountController(AccountService accountService) {
@@ -69,6 +70,10 @@ public class AccountController extends Controller {
         return internalGetAccounts(MODE_4);
     }
 
+    public Result getAccounts_v5(Http.Request request) throws Exception {
+        return internalGetAccounts(MODE_5);
+    }
+
     public Result internalGetAccounts(int mode) throws Exception {
         var accountIds = genAccountIds();
 
@@ -87,6 +92,8 @@ public class AccountController extends Controller {
             receivedAccounts = accountService.fetch_v3(accountIds);
         } else if (mode == MODE_4) {
             receivedAccounts = accountService.fetch_v4(accountIds);
+        } else if (mode == MODE_5) {
+            receivedAccounts = accountService.fetch_v5(accountIds);
         }
         
         String timeMessage = "time: " + timer.getElapsed();
