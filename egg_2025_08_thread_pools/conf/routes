@@ -9,4 +9,5 @@ GET     /accounts-v3        controllers.AccountController.getAccounts_v3(request
 GET     /accounts-v4        controllers.AccountController.getAccounts_v4(request: Request)
 GET     /accounts-v5        controllers.AccountController.getAccounts_v5(request: Request)
 
+GET     /accounts-v2026     controllers.ExampleController.getAccounts_v2026(request: Request)
 
