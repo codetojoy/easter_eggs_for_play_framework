@@ -1,0 +1,13 @@
+# Home page
+GET     /                   controllers.HomeController.index
+
+GET     /accounts-v0        controllers.AccountController.getAccounts_v0(request: Request)
+GET     /accounts-v1        controllers.AccountController.getAccounts_v1(request: Request)
+GET     /accounts-v2a       controllers.AccountController.getAccounts_v2a(request: Request)
+GET     /accounts-v2b       controllers.AccountController.getAccounts_v2b(request: Request)
+GET     /accounts-v3        controllers.AccountController.getAccounts_v3(request: Request)
+GET     /accounts-v4        controllers.AccountController.getAccounts_v4(request: Request)
+GET     /accounts-v5        controllers.AccountController.getAccounts_v5(request: Request)
+
+GET     /accounts-v2026     controllers.ExampleController.getAccounts_v2026(request: Request)
+
