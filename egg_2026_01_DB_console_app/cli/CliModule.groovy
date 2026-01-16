@@ -3,7 +3,7 @@ package cli
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
 import com.google.inject.Singleton
-import akka.actor.ActorSystem
+// import akka.actor.ActorSystem
 import com.typesafe.config.Config
 import com.typesafe.config.ConfigFactory
 
@@ -66,6 +66,7 @@ class CliModule extends AbstractModule {
         return database
     }
 
+    /*
     @Provides
     @Singleton
     ActorSystem provideActorSystem() {
@@ -86,4 +87,5 @@ class CliModule extends AbstractModule {
 
         return actorSystem
     }
+    */
 }
