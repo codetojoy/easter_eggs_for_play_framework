@@ -1,0 +1,21 @@
+
+@(customers: List[models.Customer]) 
+
+@main {
+    <table class="table table-bordered table-striped table-hover">
+      <tbody>
+
+<p>num customers: @customers.size()</p>
+@*
+*@
+      @for(customer <- customers) {
+        <tr>
+          <td>@customer.getId()</td>
+          <td>@customer.getName()</td>
+          <td>@customer.getEmail()</td>
+        </tr>
+      }
+      </tbody>
+    </table>
+}
+
