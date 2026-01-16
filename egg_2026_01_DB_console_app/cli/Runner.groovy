@@ -3,13 +3,13 @@
 import com.google.inject.Guice
 import com.google.inject.Injector
 import io.ebean.Database
-import cli.CliModule
+import cli.TestBenchModule
 import services.AccountService
 import models.*
 
 try {
     // Bootstrap Guice injector with CLI module
-    Injector injector = Guice.createInjector(new CliModule())
+    Injector injector = Guice.createInjector(new TestBenchModule())
 
     // Initialize database (triggers Ebean setup)
     Database database = injector.getInstance(Database.class)

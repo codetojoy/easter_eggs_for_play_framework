@@ -8,14 +8,14 @@ This CLI allows you to use `AccountService` from the command line by initializin
 
 ## Files
 
-1. **CliModule.groovy** - Guice module that:
+1. **TestBenchModule.groovy** - Guice module that:
    - Loads database configuration from `conf/application.conf`
    - Initializes Ebean `Database` using `DatabaseFactory`
    - Binds `AccountRepository` and `AccountService` for dependency injection
    - Handles proper database shutdown
 
 2. **Runner.groovy** - Command-line entry point that:
-   - Bootstraps Guice with `CliModule`
+   - Bootstraps Guice with `TestBenchModule`
    - Injects `AccountService` and calls `getAccountMap()`
    - Prints all accounts to the console
 
@@ -31,7 +31,7 @@ This CLI allows you to use `AccountService` from the command line by initializin
 
 The key challenge was initializing Ebean outside of Play Framework. The solution:
 
-1. `CliModule` loads `conf/application.conf` using Typesafe Config
+1. `TestBenchModule` loads `conf/application.conf` using Typesafe Config
 2. Extracts database credentials (`db.default.*` properties)
 3. Creates a `DataSourceConfig` and `DatabaseConfig` programmatically
 4. Calls `DatabaseFactory.create()` to initialize Ebean as the default server

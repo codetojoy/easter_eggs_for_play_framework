@@ -15,7 +15,7 @@ import io.ebean.datasource.DataSourceConfig
 import services.AccountService
 import repository.AccountRepository
 
-class CliModule extends AbstractModule {
+class TestBenchModule extends AbstractModule {
 
     @Override
     protected void configure() {
