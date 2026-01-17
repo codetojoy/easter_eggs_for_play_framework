@@ -3,7 +3,7 @@
 import com.google.inject.Guice
 import com.google.inject.Injector
 import io.ebean.Database
-import cli.TestBenchModule
+import test_bench.TestBenchModule
 import services.AccountService
 import models.*
 

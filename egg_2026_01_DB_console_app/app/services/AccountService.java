@@ -13,16 +13,21 @@ import jakarta.persistence.PersistenceException;
 import java.util.*;
 import java.util.concurrent.CompletionStage;
 
-public class AccountService {
+import com.typesafe.config.Config;
 
+public class AccountService {
     private final AccountRepository accountRepository;
+    private final Config config;
 
     @Inject
-    public AccountService(AccountRepository accountRepository) {
+    public AccountService(AccountRepository accountRepository, Config config) {
         this.accountRepository = accountRepository;
+        this.config = config;
     }
 
     public AccountMap getAccountMap() {
+        String value = config.getString("sandbox.mode"); // Example usage of config
+        System.out.println("TRACER sandbox.mode: " + value);
         return accountRepository.getAccounts();
     }
 }

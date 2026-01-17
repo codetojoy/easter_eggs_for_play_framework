@@ -1,4 +1,4 @@
-package cli
+package test_bench
 
 import com.google.inject.AbstractModule
 import com.google.inject.Provides
@@ -26,12 +26,16 @@ class TestBenchModule extends AbstractModule {
 
     @Provides
     @Singleton
-    Database provideDatabase() {
-        // Load the application.conf from the conf directory
+    Config provideConfig() {
         File confFile = new File("conf/application.conf")
-        Config config = ConfigFactory.parseFile(confFile)
-                                    .withFallback(ConfigFactory.load())
+        return ConfigFactory.parseFile(confFile)
+                            .withFallback(ConfigFactory.load())
+                            .resolve()
+    }
 
+    @Provides
+    @Singleton
+    Database provideDatabase(Config config) {
         // Extract database configuration
         String driver = config.getString("db.default.driver")
         String url = config.getString("db.default.url")
