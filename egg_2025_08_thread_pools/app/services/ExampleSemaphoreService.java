@@ -16,17 +16,19 @@ import models.*;
 import utils.Constants;
 import utils.MyLogger;
 
-public class ExampleService {
+public class ExampleSemaphoreService {
     private static final int MIN_DELAY_IN_SECONDS = 0;
     private static final int MAX_DELAY_IN_SECONDS = 4;
-    
+    private static final int MAX_CONCURRENT_REQUESTS = 20;
+
     private final Random random = new Random();
     private final HttpClient httpClient = HttpClient.newHttpClient();
+    private final Semaphore apiSemaphore = new Semaphore(MAX_CONCURRENT_REQUESTS);
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public ExampleService() {
+    public ExampleSemaphoreService() {
     }
 
     private void log(String message) {
@@ -78,15 +80,26 @@ public class ExampleService {
         String address = accountId + " Queen Street";
         int delayInSeconds = getRandomDelayInSeconds();
 
-        String url = String.format(Constants.ACCOUNT_URL_FORMAT, 
-                        accountId, 
-                        URLEncoder.encode(name, StandardCharsets.UTF_8), 
-                        URLEncoder.encode(address, StandardCharsets.UTF_8), 
+        String url = String.format(Constants.ACCOUNT_URL_FORMAT,
+                        accountId,
+                        URLEncoder.encode(name, StandardCharsets.UTF_8),
+                        URLEncoder.encode(address, StandardCharsets.UTF_8),
                         delayInSeconds);
         log("doFetch: url: " + url);
-        ApiResult apiResult = doFetch_v2(url);
 
-       return accountId % 2 == 0;
+        try {
+            apiSemaphore.acquire();
+            try {
+                doFetch_v2(url);
+            } finally {
+                apiSemaphore.release();
+            }
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw new RuntimeException("Interrupted while waiting for API semaphore", e);
+        }
+
+        return accountId % 2 == 0;
     }
 
     private ApiResult doFetch_v2(String url) {
