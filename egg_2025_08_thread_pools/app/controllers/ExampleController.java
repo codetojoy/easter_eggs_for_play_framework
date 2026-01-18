@@ -19,7 +19,7 @@ import services.ExampleService;
 public class ExampleController extends Controller {
     private final ExampleService exampleService;
 
-    private final static int NUM_ACCOUNTS = 25;
+    private final static int NUM_ACCOUNTS = 250;
 
     private final static int MODE_0 = 0;
 

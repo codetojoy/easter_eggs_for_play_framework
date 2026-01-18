@@ -2,47 +2,31 @@
 package services;
 
 import javax.inject.Inject;
+import java.net.URI;
+import java.net.URLEncoder;
+import java.net.http.*;
+import java.nio.charset.StandardCharsets;
 import java.util.*;
 import java.util.concurrent.*;
-import java.util.stream.Collectors;
-import play.libs.concurrent.CustomExecutionContext;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import org.slf4j.*;
 
 import models.*;
 import utils.Constants;
 import utils.MyLogger;
 
-import java.net.http.*;
-import java.nio.charset.StandardCharsets;
-import java.net.URI;
-import java.util.Collection;
-import java.util.List;                           
-import java.util.Random;                         
-import java.util.concurrent.*;                   
-import java.util.concurrent.atomic.AtomicInteger;
-            
-import com.fasterxml.jackson.databind.*;
-import com.fasterxml.jackson.core.type.TypeReference;
-
-import java.nio.charset.StandardCharsets;
-import java.net.URLEncoder;
-
 public class ExampleService {
-    private final ApiExecutionContext apiExecContext;
-    private final LongRunningExecutionContext longRunningExecContext;
-
     private static final int MIN_DELAY_IN_SECONDS = 0;
     private static final int MAX_DELAY_IN_SECONDS = 4;
+    
     private final Random random = new Random();
+    private final HttpClient httpClient = HttpClient.newHttpClient();
 
     private final Logger logger = LoggerFactory.getLogger(getClass());
 
     @Inject
-    public ExampleService(ApiExecutionContext apiExecContext,
-                          LongRunningExecutionContext longRunningExecContext) {
-        this.apiExecContext = apiExecContext;
-        this.longRunningExecContext = longRunningExecContext;
+    public ExampleService() {
     }
 
     private void log(String message) {
@@ -53,35 +37,38 @@ public class ExampleService {
         // goal: use virtual threads to check each inputAccount for inclusion
 
         try (ExecutorService executor = Executors.newVirtualThreadPerTaskExecutor()) {
-            List<Future<ResultTuple>> futures = new ArrayList<>();
-
-            for (InputAccount inputAccount : inputAccounts) {
-                Future<ResultTuple> future = executor.submit(() -> {
+            List<Future<ResultTuple>> futures = inputAccounts.stream()
+                .map(inputAccount -> executor.submit(() -> {
                     boolean doInclude = doInclude(inputAccount.getId());
-                    String threadName = getThreadName();
-                    return new ResultTuple(inputAccount, doInclude, threadName);
-                });
-                futures.add(future);
-            }
+                    return new ResultTuple(inputAccount, doInclude, getThreadName());
+                }))
+                .toList();
 
-            List<Account> resultAccounts = new ArrayList<>();
-            for (Future<ResultTuple> future : futures) {
-                ResultTuple resultTuple = future.get();
-                if (resultTuple.doInclude) {
-                    InputAccount ia = resultTuple.inputAccount;
-                    Account account = new Account(
-                        ia.getId(),
-                        ia.getName(),
-                        ia.getAddress(),
-                        resultTuple.threadName,
-                        "" // elapsed can be filled in if needed
-                    );
-                    resultAccounts.add(account);
-                }
-            }
-
-            return resultAccounts;
+            return futures.stream()
+                .map(this::getFutureResult)
+                .filter(rt -> rt.doInclude)
+                .map(this::toAccount)
+                .toList();
         }
+    }
+
+    private ResultTuple getFutureResult(Future<ResultTuple> future) {
+        try {
+            return future.get();
+        } catch (InterruptedException | ExecutionException ex) {
+            throw new RuntimeException("Error getting future result", ex);
+        }
+    }
+
+    private Account toAccount(ResultTuple resultTuple) {
+        InputAccount ia = resultTuple.inputAccount;
+        return new Account(
+            ia.getId(),
+            ia.getName(),
+            ia.getAddress(),
+            resultTuple.threadName,
+            ""
+        );
     }   
 
     public boolean doInclude(Integer accountId) {
@@ -112,7 +99,6 @@ public class ExampleService {
                                                  .GET()
                                                  .build();
 
-            HttpClient httpClient = HttpClient.newHttpClient();
             HttpResponse<String> response = httpClient.send(httpRequest, HttpResponse.BodyHandlers.ofString());
 
             ObjectMapper objectMapper = new ObjectMapper();
@@ -136,17 +122,17 @@ public class ExampleService {
         return threadName;
     }
 
-     private int getRandomDelayInSeconds() {
-        return new Random().nextInt(MAX_DELAY_IN_SECONDS - MIN_DELAY_IN_SECONDS + 1) + MIN_DELAY_IN_SECONDS;
+    private int getRandomDelayInSeconds() {
+        return random.nextInt(MAX_DELAY_IN_SECONDS - MIN_DELAY_IN_SECONDS + 1) + MIN_DELAY_IN_SECONDS;
     }
 }
 
 class ResultTuple {
-    public final InputAccount inputAccount;
-    public final boolean doInclude;
-    public final String threadName;
+    final InputAccount inputAccount;
+    final boolean doInclude;
+    final String threadName;
 
-    public ResultTuple(InputAccount inputAccount, boolean doInclude, String threadName) {
+    ResultTuple(InputAccount inputAccount, boolean doInclude, String threadName) {
         this.inputAccount = inputAccount;
         this.doInclude = doInclude;
         this.threadName = threadName;
